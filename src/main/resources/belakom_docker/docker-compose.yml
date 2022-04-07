@@ -1,0 +1,36 @@
+version: "3"
+services:
+  mongo:
+    hostname: mongo
+    container_name: mongo_local
+    image: mongo
+    expose:
+      - 27017
+    ports:
+      - '27017:27017'
+    restart: always
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+    volumes:
+      - 'mongodata:/data/db'
+
+  maildev:
+    container_name: maildev_local
+    image: maildev/maildev
+    ports:
+      - '1080:1080'
+
+  redis:
+    image: 'docker.io/bitnami/redis:5.0'
+    container_name: redis-local
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - '6379:6379'
+    volumes:
+      - 'redis_data:/bitnami/redis/data'
+
+volumes:
+  mongodata:
+    driver: local
+  redis_data:
+    driver: local
