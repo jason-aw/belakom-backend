@@ -21,7 +21,7 @@ services:
 
   redis:
     image: 'docker.io/bitnami/redis:5.0'
-    container_name: redis-local
+    container_name: redis_local
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     ports:

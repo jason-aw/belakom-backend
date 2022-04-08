@@ -44,7 +44,7 @@ public class TokenProvider {
     this.appProperties = appProperties;
     this.tokenRepository = tokenRepository;
     this.key = new SecretKeySpec(this.appProperties.getAuth().getTokenSecret().getBytes(
-        StandardCharsets.UTF_8), SignatureAlgorithm.RS512.getJcaName());
+        StandardCharsets.UTF_8), SignatureAlgorithm.HS512.getJcaName());
   }
 
   public String createAccessToken(Authentication authentication) {
