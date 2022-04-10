@@ -13,6 +13,7 @@ import com.belajarkomputer.belakombackend.security.CurrentUser;
 import com.belajarkomputer.belakombackend.security.UserPrincipal;
 import com.belajarkomputer.belakombackend.service.AuthService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -32,14 +33,16 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/api/auth")
 @AllArgsConstructor
+@Slf4j
 public class AuthController {
 
-  private UserRepository userRepository;
+  private final UserRepository userRepository;
 
-  private AuthService authService;
+  private final AuthService authService;
 
   @PostMapping("/login")
   public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    log.info("login request {}", loginRequest);
     try {
       Map<String, String> tokens = this.authService.authenticateUser(loginRequest);
       return ResponseEntity.ok(new AuthResponse(tokens.get("access_token"), tokens.get("refresh_token")));
@@ -55,7 +58,6 @@ public class AuthController {
       return ResponseEntity.status(500).body(AuthResponse.builder()
           .success(false).error("Unspecified").build());
     }
-
   }
 
   @PostMapping("/register")
@@ -95,7 +97,8 @@ public class AuthController {
   }
 
   @PostMapping("/logout")
-  public ResponseEntity<?> logout(LogoutRequest request) {
+  public ResponseEntity<?> logout(@RequestBody LogoutRequest request) {
+    log.info("logout request {}", request);
     this.authService.logout(request);
     return ResponseEntity.ok().body(null);
   }

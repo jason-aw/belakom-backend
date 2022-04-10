@@ -12,6 +12,7 @@ import com.belajarkomputer.belakombackend.security.TokenProvider;
 import com.belajarkomputer.belakombackend.service.AuthService;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +28,7 @@ import java.util.Map;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class AuthServiceImpl implements AuthService {
 
   private UserRepository userRepository;
@@ -90,6 +92,7 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   public void logout(LogoutRequest logoutRequest) {
+    log.info("logout request {}", logoutRequest);
     SecurityContextHolder.clearContext();
     try {
       this.tokenProvider.invalidateToken(logoutRequest.getAccessToken());

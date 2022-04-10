@@ -5,8 +5,8 @@ import com.belajarkomputer.belakombackend.security.RestAuthenticationEntryPoint;
 import com.belajarkomputer.belakombackend.security.TokenAuthenticationFilter;
 import com.belajarkomputer.belakombackend.security.oauth2.CustomOAuth2UserService;
 import com.belajarkomputer.belakombackend.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
-import com.belajarkomputer.belakombackend.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import com.belajarkomputer.belakombackend.security.oauth2.OAuth2AuthenticationFailureHandler;
+import com.belajarkomputer.belakombackend.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -78,7 +78,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .csrf(c -> c
-            .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+            .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+            .ignoringAntMatchers("/api/auth/logout"))
         .formLogin().disable()
         .httpBasic().disable()
         .exceptionHandling()
@@ -101,11 +102,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .anyRequest()
         .authenticated()
         .and()
-        .logout(httpSecurityLogoutConfigurer ->
-            httpSecurityLogoutConfigurer
-                .logoutUrl("/api/auth/logout")
-                .logoutSuccessUrl("/")
-                .permitAll())
         .oauth2Login()
         .authorizationEndpoint()
         .baseUri("/oauth2/authorize")
