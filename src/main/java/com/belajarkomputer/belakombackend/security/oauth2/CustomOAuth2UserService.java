@@ -2,6 +2,7 @@ package com.belajarkomputer.belakombackend.security.oauth2;
 
 import com.belajarkomputer.belakombackend.exceptions.OAuth2AuthenticationProcessingException;
 import com.belajarkomputer.belakombackend.model.entity.Provider;
+import com.belajarkomputer.belakombackend.model.entity.Role;
 import com.belajarkomputer.belakombackend.model.entity.User;
 import com.belajarkomputer.belakombackend.repository.UserRepository;
 import com.belajarkomputer.belakombackend.security.UserPrincipal;
@@ -48,7 +49,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     User user = this.userRepository.findByEmail(oAuth2UserInfo.getEmail());
     if (Objects.nonNull(user)) {
-      if(!user.getProvider().equals(Provider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))) {
+      if(!user.getProvider().equals(Provider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId().toUpperCase()))) {
         throw new OAuth2AuthenticationProcessingException("Looks like you're signed up with " +
             user.getProvider() + " account. Please use your " + user.getProvider() +
             " account to login.");
@@ -64,11 +65,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
   private User registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
     User user = new User();
 
-    user.setProvider(Provider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()));
+    user.setProvider(Provider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId().toUpperCase()));
     user.setProviderId(oAuth2UserInfo.getId());
     user.setName(oAuth2UserInfo.getName());
     user.setEmail(oAuth2UserInfo.getEmail());
     user.setImageUrl(oAuth2UserInfo.getImageUrl());
+    user.setRole(Role.USER);
     return this.userRepository.save(user);
   }
 
