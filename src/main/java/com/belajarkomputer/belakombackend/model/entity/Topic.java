@@ -14,10 +14,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @Document(collection = User.COLLECTION_NAME)
 public class Topic {
-    public static final String COLLECTION_NAME = "topics";
-    @Id
-    private String id;
-    @Indexed(unique = true)
-    private String topicName;
-    private String description;
+  public static final String COLLECTION_NAME = "topics";
+  @Id
+  private String id;
+  @Indexed(unique = true)
+  private String topicName;
+  private String description;
 }

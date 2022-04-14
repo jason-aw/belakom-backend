@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateTopicRequest {
-    private String topicName;
-    private String description;
+  private String topicName;
+  private String description;
 }
