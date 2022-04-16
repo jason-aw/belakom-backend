@@ -21,7 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController @RequestMapping(value = "/topic") @AllArgsConstructor @Slf4j
+@RestController
+@RequestMapping(value = "/api/topic")
+@AllArgsConstructor
+@Slf4j
 public class TopicController {
   
   private final TopicService topicService;

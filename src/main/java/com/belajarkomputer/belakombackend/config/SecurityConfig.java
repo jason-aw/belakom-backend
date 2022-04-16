@@ -77,9 +77,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
-        .csrf(c -> c
-            .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-            .ignoringAntMatchers("/api/auth/logout"))
+        .csrf().disable()
         .formLogin().disable()
         .httpBasic().disable()
         .exceptionHandling()
