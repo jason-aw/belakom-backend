@@ -7,8 +7,8 @@ import com.belajarkomputer.belakombackend.model.request.UpdateTopicRequest;
 import java.util.List;
 
 public interface TopicService {
-    Topic createTopic(CreateTopicRequest request);
-    List<Topic> getAllTopic();
-    void deleteTopic(String id);
-    Topic updateTopic(UpdateTopicRequest request);
+  Topic createTopic(CreateTopicRequest request);
+  List<Topic> getAllTopic();
+  void deleteTopic(String id);
+  Topic updateTopic(UpdateTopicRequest request);
 }

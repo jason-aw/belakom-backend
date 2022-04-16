@@ -83,7 +83,7 @@ public class AuthServiceImpl implements AuthService {
       Authentication auth = SecurityContextHolder.getContext().getAuthentication();
       HashMap<String, String> tokens = new HashMap<>();
       tokens.put("access_token", this.tokenProvider.createAccessToken(auth));
-      tokens.put("refresh_token", this.tokenProvider.createRefreshToken(auth));
+      tokens.put("refresh_token", refreshToken);
       return tokens;
     } else {
       throw new BadCredentialsException("Unauthorized");
@@ -96,7 +96,9 @@ public class AuthServiceImpl implements AuthService {
     SecurityContextHolder.clearContext();
     try {
       this.tokenProvider.invalidateToken(logoutRequest.getAccessToken());
-      this.tokenProvider.invalidateToken(logoutRequest.getRefreshToken());
+      if (StringUtils.hasLength(logoutRequest.getRefreshToken())) {
+        this.tokenProvider.invalidateToken(logoutRequest.getRefreshToken());
+      }
     } catch (ExpiredJwtException ignored) {}
   }
 }

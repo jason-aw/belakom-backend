@@ -58,6 +58,17 @@ public class TokenProvider {
         Date.from(expiryDate.atZone(ZoneId.systemDefault()).toInstant()));
   }
 
+  public String createAccessTokenForGoogle(Authentication authentication) {
+    UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+
+    LocalDateTime expiryDate =
+        LocalDateTime.now().plus(appProperties.getAuth().getGoogleAccessTokenExpirationSec(),
+            ChronoUnit.SECONDS);
+
+    return this.generateToken(userPrincipal.getId(),
+        Date.from(expiryDate.atZone(ZoneId.systemDefault()).toInstant()));
+  }
+
   public String createRefreshToken(Authentication authentication) {
     UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 

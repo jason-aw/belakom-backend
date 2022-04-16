@@ -18,48 +18,48 @@ import java.util.List;
 @Slf4j
 public class TopicServiceImpl implements TopicService {
 
-    private TopicRepository topicRepository;
+  private TopicRepository topicRepository;
 
-    public List<Topic> getAllTopic() {
-        return this.topicRepository.findAll();
+  public List<Topic> getAllTopic() {
+    return this.topicRepository.findAll();
+  }
+
+  public Topic createTopic(CreateTopicRequest request) {
+    if (this.topicRepository.existsByTopicName(request.getTopicName())) {
+      throw new BadRequestException("Topic dengan nama " + request.getTopicName() + " sudah ada!");
     }
 
-    public Topic createTopic(CreateTopicRequest request) {
-        if (this.topicRepository.existsByTopicName(request.getTopicName())) {
-            throw new BadRequestException("Topic dengan nama " + request.getTopicName() + " sudah ada!");
-        }
+    Topic newTopic = Topic.builder()
+        .topicName(request.getTopicName())
+        .description(request.getDescription())
+        .build();
 
-        Topic newTopic = Topic.builder()
-            .topicName(request.getTopicName())
-            .description(request.getDescription())
-            .build();
+    return this.topicRepository.save(newTopic);
+  }
 
-        return this.topicRepository.save(newTopic);
+  public void deleteTopic(String id) {
+    if (this.topicRepository.existsById(id)) {
+      throw new BadRequestException("Topic dengan id " + " tidak ada!");
     }
 
-    public void deleteTopic(String id) {
-        if (this.topicRepository.existsById(id)) {
-            throw new BadRequestException("Topic dengan id " + " tidak ada!");
-        }
+    topicRepository.deleteById(id);
+  }
 
-        topicRepository.deleteById(id);
+  public Topic updateTopic(UpdateTopicRequest request){
+    if (this.topicRepository.existsById(request.getId())) {
+      throw new BadRequestException("Topic dengan id " + " tidak ada!");
     }
 
-    public Topic updateTopic(UpdateTopicRequest request){
-        if (this.topicRepository.existsById(request.getId())) {
-            throw new BadRequestException("Topic dengan id " + " tidak ada!");
-        }
-
-        if (this.topicRepository.existsByTopicName(request.getTopicName())) {
-            throw new BadRequestException("Topic dengan nama " + request.getTopicName() + " sudah ada!");
-        }
-
-        Topic updateTopic = Topic.builder()
-                .id(request.getId())
-                .topicName(request.getTopicName())
-                .description(request.getDescription())
-                .build();
-
-        return topicRepository.save(updateTopic);
+    if (this.topicRepository.existsByTopicName(request.getTopicName())) {
+      throw new BadRequestException("Topic dengan nama " + request.getTopicName() + " sudah ada!");
     }
+
+    Topic updateTopic = Topic.builder()
+        .id(request.getId())
+        .topicName(request.getTopicName())
+        .description(request.getDescription())
+        .build();
+
+    return topicRepository.save(updateTopic);
+  }
 }

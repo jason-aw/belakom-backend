@@ -14,6 +14,15 @@ public class AppProperties {
     private String tokenSecret;
     private long accessTokenExpirationSec;
     private long refreshTokenExpirationSec;
+    private long googleAccessTokenExpirationSec;
+
+    public long getGoogleAccessTokenExpirationSec() {
+      return googleAccessTokenExpirationSec;
+    }
+
+    public void setGoogleAccessTokenExpirationSec(long googleAccessTokenExpirationSec) {
+      this.googleAccessTokenExpirationSec = googleAccessTokenExpirationSec;
+    }
 
     public long getRefreshTokenExpirationSec() {
       return refreshTokenExpirationSec;
