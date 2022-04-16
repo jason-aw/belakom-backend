@@ -85,7 +85,7 @@ public class AuthController {
         .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
   }
 
-  @GetMapping("/refresh")
+  @GetMapping("/refreshToken")
   public ResponseEntity<?> refreshToken(HttpServletRequest request) {
     try {
       Map<String, String> tokens = this.authService.refreshToken(request);
