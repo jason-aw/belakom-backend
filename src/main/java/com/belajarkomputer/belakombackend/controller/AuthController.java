@@ -91,7 +91,7 @@ public class AuthController {
       Map<String, String> tokens = this.authService.refreshToken(request);
       return ResponseEntity.ok(new AuthResponse(tokens.get("access_token"), tokens.get("refresh_token")));
     } catch (BadCredentialsException e) {
-      return ResponseEntity.status(401).body(AuthResponse.builder()
+      return ResponseEntity.status(400).body(AuthResponse.builder()
           .success(false).error("Bad credentials").build());
     }
   }
