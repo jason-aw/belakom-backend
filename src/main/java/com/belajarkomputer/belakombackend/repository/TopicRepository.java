@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface TopicRepository extends MongoRepository<Topic, String> {
-    boolean existsByTopicName(String topicName);
+  boolean existsByTopicName(String topicName);
 }

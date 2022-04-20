@@ -5,7 +5,6 @@ import com.belajarkomputer.belakombackend.model.entity.Topic;
 import com.belajarkomputer.belakombackend.model.request.CreateTopicRequest;
 import com.belajarkomputer.belakombackend.model.request.UpdateTopicRequest;
 import com.belajarkomputer.belakombackend.model.response.ApiResponse;
-import com.belajarkomputer.belakombackend.repository.TopicRepository;
 import com.belajarkomputer.belakombackend.service.TopicService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,14 +28,14 @@ public class TopicController {
   
   private final TopicService topicService;
 
-  @GetMapping("/all") public ResponseEntity<?> getAllTopic() {
+  @GetMapping("/all")
+  public ResponseEntity<?> getAllTopic() {
     try {
       List<Topic> result = topicService.getAllTopic();
       return ResponseEntity.ok(result);
     } catch (Exception ex) {
       return ResponseEntity.badRequest().body(new ApiResponse(false, ex.getMessage()));
     }
-
   }
 
   @PostMapping("/create")
@@ -44,9 +43,8 @@ public class TopicController {
     try {
       Topic result = topicService.createTopic(request);
 
-      return new ResponseEntity(
-          new ApiResponse(true, "topic " + result.getTopicName() + " berhasil dibuat!"),
-          HttpStatus.CREATED);
+      return ResponseEntity.status(HttpStatus.CREATED).body(
+          new ApiResponse(true, "topic " + result.getTopicName() + " berhasil dibuat!"));
 
     } catch (BadRequestException ex) {
       return ResponseEntity.badRequest().body(new ApiResponse(false, ex.getMessage()));
@@ -54,7 +52,8 @@ public class TopicController {
 
   }
 
-  @DeleteMapping("/delete") public ResponseEntity<?> deleteTopic(@RequestParam String id) {
+  @DeleteMapping("/delete")
+  public ResponseEntity<?> deleteTopic(@RequestParam String id) {
     try {
       topicService.deleteTopic(id);
       return ResponseEntity.ok(new ApiResponse(true, "Topic successfully deleted"));

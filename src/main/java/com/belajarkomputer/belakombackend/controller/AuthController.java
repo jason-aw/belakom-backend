@@ -87,6 +87,7 @@ public class AuthController {
 
   @GetMapping("/refreshToken")
   public ResponseEntity<?> refreshToken(HttpServletRequest request) {
+    log.info("refresh token {}", request);
     try {
       Map<String, String> tokens = this.authService.refreshToken(request);
       return ResponseEntity.ok(new AuthResponse(tokens.get("access_token"), tokens.get("refresh_token")));
@@ -101,10 +102,5 @@ public class AuthController {
     log.info("logout request {}", request);
     this.authService.logout(request);
     return ResponseEntity.ok().body(null);
-  }
-
-  @GetMapping("/hello")
-  public String hello() {
-    return "Hello World!";
   }
 }

@@ -38,14 +38,14 @@ public class TopicServiceImpl implements TopicService {
   }
 
   public void deleteTopic(String id) {
-    if (this.topicRepository.existsById(id)) {
+    if (!this.topicRepository.existsById(id)) {
       throw new BadRequestException("Topic dengan id " + " tidak ada!");
     }
 
-    topicRepository.deleteById(id);
+    this.topicRepository.deleteById(id);
   }
 
-  public Topic updateTopic(UpdateTopicRequest request){
+  public Topic updateTopic(UpdateTopicRequest request) {
     if (this.topicRepository.existsById(request.getId())) {
       throw new BadRequestException("Topic dengan id " + " tidak ada!");
     }
