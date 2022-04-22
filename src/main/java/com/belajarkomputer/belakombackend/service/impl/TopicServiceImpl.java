@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
@@ -20,10 +21,12 @@ public class TopicServiceImpl implements TopicService {
 
   private TopicRepository topicRepository;
 
+  @Override
   public List<Topic> getAllTopic() {
     return this.topicRepository.findAll();
   }
 
+  @Override
   public Topic createTopic(CreateTopicRequest request) {
     if (this.topicRepository.existsByTopicName(request.getTopicName())) {
       throw new BadRequestException("Topic dengan nama " + request.getTopicName() + " sudah ada!");
@@ -37,6 +40,7 @@ public class TopicServiceImpl implements TopicService {
     return this.topicRepository.save(newTopic);
   }
 
+  @Override
   public void deleteTopic(String id) {
     if (!this.topicRepository.existsById(id)) {
       throw new BadRequestException("Topic dengan id " + " tidak ada!");
@@ -45,8 +49,9 @@ public class TopicServiceImpl implements TopicService {
     this.topicRepository.deleteById(id);
   }
 
+  @Override
   public Topic updateTopic(UpdateTopicRequest request) {
-    if (this.topicRepository.existsById(request.getId())) {
+    if (!this.topicRepository.existsById(request.getId())) {
       throw new BadRequestException("Topic dengan id " + " tidak ada!");
     }
 
@@ -61,5 +66,14 @@ public class TopicServiceImpl implements TopicService {
         .build();
 
     return topicRepository.save(updateTopic);
+  }
+
+  @Override
+  public Topic getTopicByTopicName(String topicName) {
+    Topic result = topicRepository.findTopicByTopicName(topicName);
+    if (ObjectUtils.isEmpty(result)) {
+      throw new BadRequestException("Topic dengan nama " + topicName + " tidak ada!");
+    }
+    return result;
   }
 }

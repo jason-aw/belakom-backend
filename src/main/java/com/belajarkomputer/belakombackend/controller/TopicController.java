@@ -10,8 +10,10 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +40,16 @@ public class TopicController {
     }
   }
 
+  @GetMapping("/{topicName}")
+  public ResponseEntity<?> getTopicById(@PathVariable String topicName) {
+    try {
+      Topic result = topicService.getTopicByTopicName(topicName);
+      return ResponseEntity.ok(result);
+    } catch (Exception ex) {
+      return ResponseEntity.badRequest().body(new ApiResponse(false, ex.getMessage()));
+    }
+  }
+
   @PostMapping("/create")
   public ResponseEntity<?> createTopic(@RequestBody CreateTopicRequest request) {
     try {
@@ -52,8 +64,8 @@ public class TopicController {
 
   }
 
-  @DeleteMapping("/delete")
-  public ResponseEntity<?> deleteTopic(@RequestParam String id) {
+  @DeleteMapping("/delete/{id}")
+  public ResponseEntity<?> deleteTopic(@PathVariable String id) {
     try {
       topicService.deleteTopic(id);
       return ResponseEntity.ok(new ApiResponse(true, "Topic successfully deleted"));

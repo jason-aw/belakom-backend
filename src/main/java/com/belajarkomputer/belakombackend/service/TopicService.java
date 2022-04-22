@@ -11,4 +11,5 @@ public interface TopicService {
   List<Topic> getAllTopic();
   void deleteTopic(String id);
   Topic updateTopic(UpdateTopicRequest request);
+  Topic getTopicByTopicName(String topicName);
 }
