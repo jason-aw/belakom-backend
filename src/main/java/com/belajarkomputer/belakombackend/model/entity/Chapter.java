@@ -13,12 +13,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = Topic.COLLECTION_NAME)
-public class Topic {
-  public static final String COLLECTION_NAME = "topics";
+@Document(collection = Chapter.COLLECTION_NAME)
+public class Chapter {
+  public static final String COLLECTION_NAME = "chapters";
   @Id
   private String id;
+  private int order;
+  private String topicId;
   @Indexed(unique = true)
-  private String topicName;
+  private String chapterName;
   private String description;
 }
