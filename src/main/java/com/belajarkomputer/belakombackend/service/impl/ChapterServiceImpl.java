@@ -2,7 +2,6 @@ package com.belajarkomputer.belakombackend.service.impl;
 
 import com.belajarkomputer.belakombackend.exceptions.BadRequestException;
 import com.belajarkomputer.belakombackend.model.entity.Chapter;
-import com.belajarkomputer.belakombackend.model.entity.Topic;
 import com.belajarkomputer.belakombackend.model.request.CreateChapterRequest;
 import com.belajarkomputer.belakombackend.model.request.UpdateChapterRequest;
 import com.belajarkomputer.belakombackend.repository.ChapterRepository;
@@ -12,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -28,8 +28,10 @@ public class ChapterServiceImpl implements ChapterService {
   @Override
   public Chapter createChapter(CreateChapterRequest request) {
 
-    if (chapterRepository.existsByOrder(request.getOrder()) || request.getOrder() == 0) {
-      throw new BadRequestException("Chapter dengan no urut " + request.getOrder() + " tidak valid!");
+    if (chapterRepository.existsByOrder(request.getOrder())) {
+      throw new BadRequestException("Chapter with duplicate order found");
+    } else if (request.getOrder() <= 0) {
+      throw new BadRequestException("Chapter cannot have order 0 or negative values");
     }
 
     Chapter newChapter = Chapter.builder()
@@ -37,6 +39,7 @@ public class ChapterServiceImpl implements ChapterService {
         .order(request.getOrder())
         .topicId(request.getTopicId())
         .description(request.getDescription())
+        .htmlContent("")
         .build();
 
     return this.chapterRepository.save(newChapter);
@@ -45,25 +48,37 @@ public class ChapterServiceImpl implements ChapterService {
   @Override
   public void deleteChapter(String id) {
     if (!this.chapterRepository.existsById(id)) {
-      throw new BadRequestException("Chapter dengan id " + " tidak ada!");
+      throw new BadRequestException("Chapter with id " + id + "not found");
     }
     this.chapterRepository.deleteById(id);
   }
 
   @Override
   public Chapter updateChapter(UpdateChapterRequest request) {
-    if (chapterRepository.existsByOrder(request.getOrder()) || request.getOrder() == 0) {
-      throw new BadRequestException("Chapter dengan no urut " + request.getOrder() + " tidak valid!");
+    if (chapterRepository.existsByOrder(request.getOrder())) {
+      Chapter chapter = chapterRepository.findChapterByOrder(request.getOrder());
+      if (!chapter.getId().equals(request.getId())) {
+        throw new BadRequestException("Chapter with duplicate order found");
+      }
+    } else if (request.getOrder() <= 0) {
+      throw new BadRequestException("Chapter cannot have order 0 or negative values");
     }
 
-    Chapter newChapter = Chapter.builder()
-        .id(request.getId())
-        .chapterName(request.getChapterName())
-        .order(request.getOrder())
-        .description(request.getDescription())
-        .build();
+    Chapter chapter = this.findChapterById(request.getId());
+    chapter.setChapterName(request.getChapterName());
+    chapter.setDescription(request.getDescription());
+    chapter.setOrder(request.getOrder());
+    chapter.setHtmlContent(request.getHtmlContent());
+    return this.chapterRepository.save(chapter);
+  }
 
-    return this.chapterRepository.save(newChapter);
+  @Override
+  public Chapter findChapterById(String id) {
+    Chapter chapter = this.chapterRepository.findById(id).orElse(null);
+    if (Objects.isNull(chapter)) {
+      throw new BadRequestException("Chapter with id " + id + "not found");
+    }
+    return chapter;
   }
 
 }

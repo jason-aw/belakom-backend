@@ -1,8 +1,9 @@
-package com.belajarkomputer.belakombackend.security;
+package com.belajarkomputer.belakombackend.utils;
 
 import com.belajarkomputer.belakombackend.config.AppProperties;
 import com.belajarkomputer.belakombackend.model.entity.JwtToken;
 import com.belajarkomputer.belakombackend.repository.TokenRepository;
+import com.belajarkomputer.belakombackend.security.UserPrincipal;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;

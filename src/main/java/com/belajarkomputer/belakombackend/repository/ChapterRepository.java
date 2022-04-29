@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ChapterRepository extends MongoRepository<Chapter, String>, ChapterRepositoryCustom {
   boolean existsByOrder(int order);
+  Chapter findChapterByOrder(int order);
 }
