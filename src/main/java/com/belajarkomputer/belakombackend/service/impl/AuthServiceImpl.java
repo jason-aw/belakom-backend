@@ -8,7 +8,7 @@ import com.belajarkomputer.belakombackend.model.request.LoginRequest;
 import com.belajarkomputer.belakombackend.model.request.LogoutRequest;
 import com.belajarkomputer.belakombackend.model.request.RegisterRequest;
 import com.belajarkomputer.belakombackend.repository.UserRepository;
-import com.belajarkomputer.belakombackend.security.TokenProvider;
+import com.belajarkomputer.belakombackend.utils.TokenProvider;
 import com.belajarkomputer.belakombackend.service.AuthService;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.AllArgsConstructor;

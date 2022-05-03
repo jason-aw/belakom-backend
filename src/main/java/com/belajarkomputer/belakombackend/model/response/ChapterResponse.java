@@ -1,13 +1,16 @@
-package com.belajarkomputer.belakombackend.model.request;
+package com.belajarkomputer.belakombackend.model.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class UpdateChapterRequest {
+@AllArgsConstructor
+@Builder
+public class ChapterResponse {
+  private boolean success;
   private String id;
   private String chapterName;
   private int order;

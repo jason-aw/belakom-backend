@@ -2,7 +2,7 @@ package com.belajarkomputer.belakombackend.security.oauth2;
 
 import com.belajarkomputer.belakombackend.config.AppProperties;
 import com.belajarkomputer.belakombackend.exceptions.BadRequestException;
-import com.belajarkomputer.belakombackend.security.TokenProvider;
+import com.belajarkomputer.belakombackend.utils.TokenProvider;
 import com.belajarkomputer.belakombackend.utils.CookieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

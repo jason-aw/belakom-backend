@@ -12,4 +12,5 @@ public interface TopicService {
   void deleteTopic(String id);
   Topic updateTopic(UpdateTopicRequest request);
   Topic getTopicByTopicName(String topicName);
+  Topic findTopicById(String id);
 }

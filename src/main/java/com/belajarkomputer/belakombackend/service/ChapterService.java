@@ -11,4 +11,5 @@ public interface ChapterService {
   Chapter createChapter(CreateChapterRequest request);
   void deleteChapter(String id);
   Chapter updateChapter(UpdateChapterRequest request);
+  Chapter findChapterById(String id);
 }
