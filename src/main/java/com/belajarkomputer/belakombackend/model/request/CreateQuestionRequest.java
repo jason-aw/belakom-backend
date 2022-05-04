@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CreateQuestionRequest {
 
-  String quizId;
+  String chapterId;
   String topicId;
 
   String question;
@@ -20,6 +20,6 @@ public class CreateQuestionRequest {
   String Type;
 
   //for MPC question
-  List<String> fakeAnswer;
+  List<String> fakeAnswers;
 
 }

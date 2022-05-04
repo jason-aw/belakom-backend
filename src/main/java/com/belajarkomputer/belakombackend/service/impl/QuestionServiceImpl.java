@@ -20,13 +20,18 @@ public class QuestionServiceImpl implements QuestionService {
   private QuestionRepository questionRepository;
 
   @Override
-  public List<Question> getAllQuestionByQuizId(String quizId) {
-    return this.questionRepository.findAllQuestionByQuizId(quizId);
+  public List<Question> getAllQuestionByChapterId(String chapterId) {
+    return this.questionRepository.findAllQuestionByChapterId(chapterId);
   }
 
   @Override
-  public Question getQuestionById(String quizId, String questionId) {
-    return this.questionRepository.findQuestionByQuizIdAndQuestionId(quizId, questionId);
+  public List<Question> getAllQuestionByTopicId(String topicId) {
+    return this.questionRepository.findAllQuestionByTopicId(topicId);
+  }
+
+  @Override
+  public Question getQuestionById(String chapterId, String questionId) {
+    return this.questionRepository.findQuestionByChapterIdAndQuestionId(chapterId, questionId);
   }
 
   @Override
@@ -37,12 +42,13 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     Question newQuestion = Question.builder()
-        .quizId(request.getQuizId())
+        .chapterId(request.getChapterId())
         .topicId(request.getTopicId())
+        .order(request.getOrder())
         .type(request.getType())
         .question(request.getQuestion())
         .correctAnswer(request.getCorrectAnswer())
-        .fakeAnswer(request.getFakeAnswer())
+        .fakeAnswers(request.getFakeAnswers())
         .build();
 
 
@@ -64,12 +70,12 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     Question newQuestion = Question.builder()
-        .quizId(request.getQuizId())
+        .chapterId(request.getChapterId())
         .topicId(request.getTopicId())
         .type(request.getType())
         .question(request.getQuestion())
         .correctAnswer(request.getCorrectAnswer())
-        .fakeAnswer(request.getFakeAnswer())
+        .fakeAnswers(request.getFakeAnswers())
         .build();
 
     return this.questionRepository.save(newQuestion);

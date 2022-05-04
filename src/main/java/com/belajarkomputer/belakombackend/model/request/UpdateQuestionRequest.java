@@ -12,7 +12,7 @@ import java.util.List;
 public class UpdateQuestionRequest {
 
   String id;
-  String quizId;
+  String chapterId;
   String topicId;
 
   String question;
@@ -21,6 +21,6 @@ public class UpdateQuestionRequest {
   String Type;
 
   //for MPC question
-  List<String> fakeAnswer;
+  List<String> fakeAnswers;
 
 }

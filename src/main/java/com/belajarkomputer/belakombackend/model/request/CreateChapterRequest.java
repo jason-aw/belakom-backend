@@ -12,4 +12,5 @@ public class CreateChapterRequest {
   private int order;
   private String topicId;
   private String description;
+  private boolean enableQuiz;
 }

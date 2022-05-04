@@ -19,6 +19,7 @@ public class Chapter {
   private String id;
   private int order;
   private String topicId;
+  private boolean enableQuiz;
   @Indexed(unique = true)
   private String chapterName;
   private String description;

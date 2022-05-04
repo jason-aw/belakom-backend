@@ -8,8 +8,9 @@ import java.util.List;
 
 public interface QuestionService {
 
-  List<Question> getAllQuestionByQuizId(String quizId);
-  Question getQuestionById(String quizId, String questionId);
+  List<Question> getAllQuestionByChapterId(String chapterId);
+  List<Question> getAllQuestionByTopicId(String topicId);
+  Question getQuestionById(String chapterId, String questionId);
   Question createQuestion(CreateQuestionRequest request);
   void deleteQuestion(String id);
   Question updateQuestion(UpdateQuestionRequest request);

@@ -18,15 +18,14 @@ public class Question {
   public static final String COLLECTION_NAME = "questions";
   @Id
   String id;
-  String quizId;
+  String chapterId;
   String topicId;
   String type;
-
 
   String question;
   String correctAnswer;
   int order;
 
   //for MPC question
-  List<String> fakeAnswer;
+  List<String> fakeAnswers;
 }

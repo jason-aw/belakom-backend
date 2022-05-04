@@ -52,6 +52,8 @@ public class ChapterController {
           .order(chapter.getOrder())
           .description(chapter.getDescription())
           .htmlContent(chapter.getHtmlContent())
+          .topicId(chapter.getTopicId())
+          .enableQuiz(chapter.isEnableQuiz())
           .build());
     } catch (BadRequestException ex) {
       log.error("Chapter not found");

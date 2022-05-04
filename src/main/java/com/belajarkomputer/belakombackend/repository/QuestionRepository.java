@@ -6,7 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface QuestionRepository extends MongoRepository<Question, String>, QuestionRepositoryCustom {
-  boolean existsByQuizId(String quizId);
-  boolean existsByTopicId(String topicId);
   boolean existsByOrder(int order);
 }

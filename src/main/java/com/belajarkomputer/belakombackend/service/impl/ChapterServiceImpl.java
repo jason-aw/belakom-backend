@@ -39,6 +39,7 @@ public class ChapterServiceImpl implements ChapterService {
         .order(request.getOrder())
         .topicId(request.getTopicId())
         .description(request.getDescription())
+        .enableQuiz(request.isEnableQuiz())
         .htmlContent("")
         .build();
 
@@ -69,6 +70,7 @@ public class ChapterServiceImpl implements ChapterService {
     chapter.setDescription(request.getDescription());
     chapter.setOrder(request.getOrder());
     chapter.setHtmlContent(request.getHtmlContent());
+    chapter.setEnableQuiz(request.isEnableQuiz());
     return this.chapterRepository.save(chapter);
   }
 

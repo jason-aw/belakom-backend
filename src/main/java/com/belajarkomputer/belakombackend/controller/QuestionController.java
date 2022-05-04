@@ -30,21 +30,31 @@ public class QuestionController {
 
   private final QuestionService questionService;
 
-  @GetMapping("/{quizId}")
-  public ResponseEntity<?> getAllQuestionsByQuizId(@PathVariable String quizId) {
+  @GetMapping("/bychapter/{chapterId}")
+  public ResponseEntity<?> getAllQuestionsByChapterId(@PathVariable String chapterId) {
     try {
-      List<Question> result = questionService.getAllQuestionByQuizId(quizId);
+      List<Question> result = questionService.getAllQuestionByChapterId(chapterId);
       return ResponseEntity.ok(result);
     } catch (Exception ex) {
       return ResponseEntity.badRequest().body(new ApiResponse(false, ex.getMessage()));
     }
   }
 
-  @GetMapping("/{quizId}/{questionId}")
-  public ResponseEntity<?> getQuestionByQuizIdAndQuestionId(@PathVariable String quizId,
+  @GetMapping("/bytopic/{topicId}")
+  public ResponseEntity<?> getAllQuestionsByTopicId(@PathVariable String topicId) {
+    try {
+      List<Question> result = questionService.getAllQuestionByTopicId(topicId);
+      return ResponseEntity.ok(result);
+    } catch (Exception ex) {
+      return ResponseEntity.badRequest().body(new ApiResponse(false, ex.getMessage()));
+    }
+  }
+
+  @GetMapping("/{chapterId}/{questionId}")
+  public ResponseEntity<?> getQuestionByChapterIdAndQuestionId(@PathVariable String chapterId,
       @PathVariable String questionId) {
     try {
-      Question result = questionService.getQuestionById(quizId, questionId);
+      Question result = questionService.getQuestionById(chapterId, questionId);
       return ResponseEntity.ok(result);
     } catch (Exception ex) {
       return ResponseEntity.badRequest().body(new ApiResponse(false, ex.getMessage()));

@@ -16,4 +16,6 @@ public class ChapterResponse {
   private int order;
   private String description;
   private String htmlContent;
+  private String topicId;
+  private boolean enableQuiz;
 }

@@ -12,5 +12,6 @@ public class UpdateChapterRequest {
   private String chapterName;
   private int order;
   private String description;
+  private boolean enableQuiz;
   private String htmlContent;
 }
