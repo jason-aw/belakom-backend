@@ -7,9 +7,11 @@ import com.belajarkomputer.belakombackend.model.entity.User;
 import com.belajarkomputer.belakombackend.model.request.LoginRequest;
 import com.belajarkomputer.belakombackend.model.request.LogoutRequest;
 import com.belajarkomputer.belakombackend.model.request.RegisterRequest;
+import com.belajarkomputer.belakombackend.model.vo.UserVo;
 import com.belajarkomputer.belakombackend.repository.UserRepository;
-import com.belajarkomputer.belakombackend.utils.TokenProvider;
+import com.belajarkomputer.belakombackend.security.UserPrincipal;
 import com.belajarkomputer.belakombackend.service.AuthService;
+import com.belajarkomputer.belakombackend.utils.TokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,14 +19,15 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -60,7 +63,7 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Override
-  public Map<String, String> authenticateUser(LoginRequest loginRequest) {
+  public UserVo authenticateUser(LoginRequest loginRequest) {
     Authentication authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(
             loginRequest.getEmail(),
@@ -69,22 +72,35 @@ public class AuthServiceImpl implements AuthService {
     );
 
     SecurityContextHolder.getContext().setAuthentication(authentication);
-
-    HashMap<String, String> tokens = new HashMap<>();
-    tokens.put("access_token", this.tokenProvider.createAccessToken(authentication));
-    tokens.put("refresh_token", this.tokenProvider.createRefreshToken(authentication));
-    return tokens;
+    UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+    List<String> roles = principal.getAuthorities()
+        .stream()
+        .map(GrantedAuthority::getAuthority)
+        .collect(Collectors.toList());
+    return UserVo.builder()
+        .email(principal.getEmail())
+        .accessToken(this.tokenProvider.createAccessToken(authentication))
+        .refreshToken(this.tokenProvider.createRefreshToken(authentication))
+        .roles(roles)
+        .build();
   }
 
   @Override
-  public Map<String, String> refreshToken(HttpServletRequest request) {
+  public UserVo refreshToken(HttpServletRequest request) {
     String refreshToken = this.tokenProvider.getJwtFromRequest(request);
     if (StringUtils.hasText(refreshToken) && this.tokenProvider.validateToken(refreshToken)) {
       Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-      HashMap<String, String> tokens = new HashMap<>();
-      tokens.put("access_token", this.tokenProvider.createAccessToken(auth));
-      tokens.put("refresh_token", refreshToken);
-      return tokens;
+      UserPrincipal principal = (UserPrincipal) auth.getPrincipal();
+      List<String> roles = principal.getAuthorities()
+          .stream()
+          .map(GrantedAuthority::getAuthority)
+          .collect(Collectors.toList());
+      return UserVo.builder()
+          .email(principal.getEmail())
+          .accessToken(this.tokenProvider.createAccessToken(auth))
+          .refreshToken(refreshToken)
+          .roles(roles)
+          .build();
     } else {
       throw new BadCredentialsException("Unauthorized");
     }
@@ -99,6 +115,7 @@ public class AuthServiceImpl implements AuthService {
       if (StringUtils.hasLength(logoutRequest.getRefreshToken())) {
         this.tokenProvider.invalidateToken(logoutRequest.getRefreshToken());
       }
-    } catch (ExpiredJwtException ignored) {}
+    } catch (ExpiredJwtException ignored) {
+    }
   }
 }
