@@ -6,6 +6,7 @@ import com.belajarkomputer.belakombackend.model.request.CreateChapterRequest;
 import com.belajarkomputer.belakombackend.model.request.UpdateChapterRequest;
 import com.belajarkomputer.belakombackend.repository.ChapterRepository;
 import com.belajarkomputer.belakombackend.service.ChapterService;
+import com.belajarkomputer.belakombackend.service.FileStorageService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.Objects;
 public class ChapterServiceImpl implements ChapterService {
 
   private ChapterRepository chapterRepository;
+  private FileStorageService fileStorageService;
 
   @Override
   public List<Chapter> getAllChaptersByTopicId(String topicId) {
@@ -48,9 +50,11 @@ public class ChapterServiceImpl implements ChapterService {
 
   @Override
   public void deleteChapter(String id) {
-    if (!this.chapterRepository.existsById(id)) {
+    if (!this.chapterRepository.findById(id).isPresent()) {
       throw new BadRequestException("Chapter with id " + id + "not found");
     }
+    Chapter chapter = this.chapterRepository.findById(id).get();
+    chapter.getImageAttachments().forEach(filename -> this.fileStorageService.delete(filename));
     this.chapterRepository.deleteById(id);
   }
 
@@ -71,6 +75,7 @@ public class ChapterServiceImpl implements ChapterService {
     chapter.setOrder(request.getOrder());
     chapter.setHtmlContent(request.getHtmlContent());
     chapter.setEnableQuiz(request.isEnableQuiz());
+    chapter.setImageAttachments(request.getImageAttachments());
     return this.chapterRepository.save(chapter);
   }
 
