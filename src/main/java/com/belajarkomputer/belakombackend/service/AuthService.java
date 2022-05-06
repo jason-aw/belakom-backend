@@ -4,16 +4,16 @@ import com.belajarkomputer.belakombackend.model.entity.User;
 import com.belajarkomputer.belakombackend.model.request.LoginRequest;
 import com.belajarkomputer.belakombackend.model.request.LogoutRequest;
 import com.belajarkomputer.belakombackend.model.request.RegisterRequest;
+import com.belajarkomputer.belakombackend.model.vo.UserVo;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 public interface AuthService {
   User registerUser(RegisterRequest request);
 
-  Map<String, String> authenticateUser(LoginRequest loginRequest);
+  UserVo authenticateUser(LoginRequest loginRequest);
 
-  Map<String, String> refreshToken(HttpServletRequest request);
+  UserVo refreshToken(HttpServletRequest request);
 
   void logout(LogoutRequest request);
 }

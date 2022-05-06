@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,4 +15,5 @@ public class UpdateChapterRequest {
   private String description;
   private boolean enableQuiz;
   private String htmlContent;
+  private List<String> imageAttachments;
 }

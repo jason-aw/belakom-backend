@@ -1,7 +1,6 @@
 package com.belajarkomputer.belakombackend.controller;
 
 import com.belajarkomputer.belakombackend.model.entity.FileInfo;
-import com.belajarkomputer.belakombackend.model.response.ApiResponse;
 import com.belajarkomputer.belakombackend.model.response.FilesResponse;
 import com.belajarkomputer.belakombackend.service.FileStorageService;
 import com.belajarkomputer.belakombackend.utils.FileHelper;
@@ -68,8 +67,8 @@ public class FilesController {
   }
 
   @DeleteMapping("/{filename:.+}")
-  public ResponseEntity<ApiResponse> deleteFile(@PathVariable String filename) {
+  public ResponseEntity<FilesResponse> deleteFile(@PathVariable String filename) {
     boolean result = this.fileStorageService.delete(filename);
-    return ResponseEntity.ok().body(new ApiResponse(result, ""));
+    return ResponseEntity.ok().body(new FilesResponse(result, null, filename));
   }
 }

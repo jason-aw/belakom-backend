@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,5 +20,6 @@ public class ChapterResponse {
   private String description;
   private String htmlContent;
   private String topicId;
+  private List<String> imageAttachments = new ArrayList<>();
   private boolean enableQuiz;
 }

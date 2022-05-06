@@ -1,4 +1,4 @@
-package com.belajarkomputer.belakombackend.model.response;
+package com.belajarkomputer.belakombackend.model.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,12 +11,9 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthResponse {
+public class UserVo {
+  private String email;
   private String accessToken;
   private String refreshToken;
   private List<String> roles;
-  private String email;
-  private String tokenType;
-  private boolean success;
-  private String error;
 }
