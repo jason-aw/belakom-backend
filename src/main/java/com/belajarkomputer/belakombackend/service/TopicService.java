@@ -11,6 +11,9 @@ public interface TopicService {
   List<Topic> getAllTopic();
   void deleteTopic(String id);
   Topic updateTopic(UpdateTopicRequest request);
+  void addChapterList(String topicId, String chapterId);
+  void removeChapterFromOrder(String topicId, String chapterId);
+  Topic updateChapterList(String topicId, List<String> chapterOrder);
   Topic getTopicByTopicName(String topicName);
   Topic findTopicById(String id);
 }

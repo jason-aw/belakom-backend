@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 public class UpdateChapterRequest {
   private String id;
   private String chapterName;
-  private int order;
   private String description;
   private boolean enableQuiz;
   private String htmlContent;

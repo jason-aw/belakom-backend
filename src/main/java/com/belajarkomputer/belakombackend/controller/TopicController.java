@@ -3,6 +3,7 @@ package com.belajarkomputer.belakombackend.controller;
 import com.belajarkomputer.belakombackend.exceptions.BadRequestException;
 import com.belajarkomputer.belakombackend.model.entity.Topic;
 import com.belajarkomputer.belakombackend.model.request.CreateTopicRequest;
+import com.belajarkomputer.belakombackend.model.request.UpdateTopicChapterOrderRequest;
 import com.belajarkomputer.belakombackend.model.request.UpdateTopicRequest;
 import com.belajarkomputer.belakombackend.model.response.ApiResponse;
 import com.belajarkomputer.belakombackend.service.TopicService;
@@ -61,6 +62,19 @@ public class TopicController {
       return ResponseEntity.badRequest().body(new ApiResponse(false, ex.getMessage()));
     }
 
+  }
+
+  @PostMapping("/updateChapterOrder")
+  public ResponseEntity<?> updateTopicsChapterOrder(@RequestBody
+      UpdateTopicChapterOrderRequest request) {
+    try {
+      Topic result = topicService.updateChapterList(request.getTopicId(), request.getChapterOrder());
+      return ResponseEntity.ok(new ApiResponse(true,
+          "Chapters Order in Topic with id " + result.getId() + "'s order successfully updated"
+              + result.getChapterOrder()));
+    } catch (BadRequestException ex) {
+      return ResponseEntity.badRequest().body(new ApiResponse(false, ex.getMessage()));
+    }
   }
 
   @DeleteMapping("/delete/{id}")

@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateChapterRequest {
-  private String chapterName;
+public class UpdateTopicChapterOrderRequest {
   private String topicId;
-  private String description;
-  private boolean enableQuiz;
+  private List<String> chapterOrder;
 }

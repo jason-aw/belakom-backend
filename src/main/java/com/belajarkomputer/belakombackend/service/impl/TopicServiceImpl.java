@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,6 +36,7 @@ public class TopicServiceImpl implements TopicService {
     Topic newTopic = Topic.builder()
         .topicName(request.getTopicName())
         .description(request.getDescription())
+        .chapterOrder(new ArrayList<String>())
         .build();
 
     return this.topicRepository.save(newTopic);
@@ -58,6 +60,27 @@ public class TopicServiceImpl implements TopicService {
     Topic topic = this.findTopicById(request.getId());
     topic.setTopicName(request.getTopicName());
     topic.setDescription(request.getDescription());
+    return topicRepository.save(topic);
+  }
+
+  @Override
+  public void addChapterList(String topicId, String chapterId) {
+    Topic topic = this.findTopicById(topicId);
+    topic.getChapterOrder().add(chapterId);
+    topicRepository.save(topic);
+  }
+
+  @Override
+  public void removeChapterFromOrder(String topicId, String chapterId) {
+    Topic topic = this.findTopicById(topicId);
+    topic.getChapterOrder().remove(chapterId);
+    topicRepository.save(topic);
+  }
+
+  @Override
+  public Topic updateChapterList(String topicId, List<String> chapterOrder) {
+    Topic topic = this.findTopicById(topicId);
+    topic.setChapterOrder(chapterOrder);
     return topicRepository.save(topic);
   }
 

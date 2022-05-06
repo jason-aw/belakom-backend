@@ -17,7 +17,6 @@ public class Chapter {
   public static final String COLLECTION_NAME = "chapters";
   @Id
   private String id;
-  private int order;
   private String topicId;
   private boolean enableQuiz;
   @Indexed(unique = true)

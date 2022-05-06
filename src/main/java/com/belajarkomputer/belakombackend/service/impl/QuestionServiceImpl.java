@@ -1,6 +1,7 @@
 package com.belajarkomputer.belakombackend.service.impl;
 
 import com.belajarkomputer.belakombackend.exceptions.BadRequestException;
+import com.belajarkomputer.belakombackend.model.entity.Chapter;
 import com.belajarkomputer.belakombackend.model.entity.Question;
 import com.belajarkomputer.belakombackend.model.request.CreateQuestionRequest;
 import com.belajarkomputer.belakombackend.model.request.UpdateQuestionRequest;

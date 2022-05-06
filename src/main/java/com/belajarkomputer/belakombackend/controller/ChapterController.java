@@ -49,7 +49,6 @@ public class ChapterController {
           .success(true)
           .id(chapter.getId())
           .chapterName(chapter.getChapterName())
-          .order(chapter.getOrder())
           .description(chapter.getDescription())
           .htmlContent(chapter.getHtmlContent())
           .topicId(chapter.getTopicId())
@@ -65,7 +64,8 @@ public class ChapterController {
   public ResponseEntity<?> createChapter(@RequestBody CreateChapterRequest request) {
     try {
       Chapter result = chapterService.createChapter(request);
-      return ResponseEntity.ok(result);
+      return ResponseEntity.ok(ChapterResponse
+          .builder().success(true).build());
     } catch (Exception ex) {
       return ResponseEntity.badRequest().body(new ApiResponse(false, ex.getMessage()));
     }
