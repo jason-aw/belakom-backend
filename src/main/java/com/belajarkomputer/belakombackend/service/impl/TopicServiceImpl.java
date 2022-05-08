@@ -36,7 +36,7 @@ public class TopicServiceImpl implements TopicService {
     Topic newTopic = Topic.builder()
         .topicName(request.getTopicName())
         .description(request.getDescription())
-        .chapterOrder(new ArrayList<String>())
+        .chapterOrder(new ArrayList<>())
         .build();
 
     return this.topicRepository.save(newTopic);

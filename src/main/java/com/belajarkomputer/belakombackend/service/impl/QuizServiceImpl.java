@@ -2,6 +2,7 @@ package com.belajarkomputer.belakombackend.service.impl;
 
 import com.belajarkomputer.belakombackend.exceptions.BadRequestException;
 import com.belajarkomputer.belakombackend.model.entity.Quiz;
+import com.belajarkomputer.belakombackend.model.entity.Topic;
 import com.belajarkomputer.belakombackend.model.request.CreateQuizRequest;
 import com.belajarkomputer.belakombackend.model.request.UpdateQuizRequest;
 import com.belajarkomputer.belakombackend.repository.QuizRepository;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -26,7 +28,11 @@ public class QuizServiceImpl implements QuizService {
 
   @Override
   public Quiz getQuizById(String quizId){
-    return this.quizRepository.findById(quizId).get();
+    Quiz quiz = this.quizRepository.findById(quizId).orElse(null);
+    if (Objects.isNull(quiz)) {
+      throw new BadRequestException("Quiz with id " + quizId + " does not exist");
+    }
+    return quiz;
   }
 
   @Override

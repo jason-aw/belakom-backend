@@ -21,7 +21,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -78,9 +77,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .csrf().disable()
-//        .csrf(c -> c
-//            .csrfTokenRepository(this.csrfTokenRepository())
-//            .ignoringAntMatchers("/api/auth/logout"))
         .formLogin().disable()
         .httpBasic().disable()
         .exceptionHandling()
@@ -120,11 +116,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .failureHandler(oAuth2AuthenticationFailureHandler);
 
     http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-  }
-
-  private CookieCsrfTokenRepository csrfTokenRepository() {
-    final CookieCsrfTokenRepository repository = CookieCsrfTokenRepository.withHttpOnlyFalse();
-    repository.setSecure(true);
-    return repository;
   }
 }

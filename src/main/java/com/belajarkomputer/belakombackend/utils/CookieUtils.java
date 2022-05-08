@@ -18,11 +18,6 @@ public class CookieUtils {
       return Arrays.stream(cookies)
           .filter(cookie -> cookie.getName().equals(name))
           .findFirst();
-//      for (Cookie cookie : cookies) {
-//        if (cookie.getName().equals(name)) {
-//          return Optional.of(cookie);
-//        }
-//      }
     }
 
     return Optional.empty();
@@ -49,14 +44,6 @@ public class CookieUtils {
           response.addCookie(cookie);
         }
       });
-//      for (Cookie cookie: cookies) {
-//        if (cookie.getName().equals(name)) {
-//          cookie.setValue("");
-//          cookie.setPath("/");
-//          cookie.setMaxAge(0);
-//          response.addCookie(cookie);
-//        }
-//      }
     }
   }
 
