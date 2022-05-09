@@ -1,5 +1,5 @@
 package com.belajarkomputer.belakombackend.model.entity;
 
 public enum QuestionType {
-  MPC,  shortAnswerText
+  MULTIPLE_CHOICE,  SHORT_ANSWER
 }

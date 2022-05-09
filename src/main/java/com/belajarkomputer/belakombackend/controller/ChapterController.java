@@ -54,6 +54,7 @@ public class ChapterController {
           .topicId(chapter.getTopicId())
           .enableQuiz(chapter.isEnableQuiz())
           .imageAttachments(chapter.getImageAttachments())
+              .questions(chapter.getQuestions())
           .build());
     } catch (BadRequestException ex) {
       log.error("Chapter not found");

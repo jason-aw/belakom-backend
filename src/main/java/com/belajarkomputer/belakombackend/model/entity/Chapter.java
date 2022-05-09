@@ -27,4 +27,5 @@ public class Chapter {
   private String description;
   private String htmlContent;
   private List<String> imageAttachments =  new ArrayList<>();
+  private List<Question> questions = new ArrayList<>();
 }

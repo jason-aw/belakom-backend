@@ -1,5 +1,6 @@
 package com.belajarkomputer.belakombackend.model.request;
 
+import com.belajarkomputer.belakombackend.model.entity.Question;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,4 +17,5 @@ public class UpdateChapterRequest {
   private boolean enableQuiz;
   private String htmlContent;
   private List<String> imageAttachments;
+  private List<Question> questions;
 }

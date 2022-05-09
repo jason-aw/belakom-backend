@@ -89,6 +89,7 @@ public class ChapterServiceImpl implements ChapterService {
     chapter.setHtmlContent(request.getHtmlContent());
     chapter.setEnableQuiz(request.isEnableQuiz());
     chapter.setImageAttachments(request.getImageAttachments());
+    chapter.setQuestions(request.getQuestions());
     return this.chapterRepository.save(chapter);
   }
 

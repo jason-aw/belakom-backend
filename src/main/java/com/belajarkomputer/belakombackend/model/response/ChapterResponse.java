@@ -1,5 +1,6 @@
 package com.belajarkomputer.belakombackend.model.response;
 
+import com.belajarkomputer.belakombackend.model.entity.Question;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,10 +17,10 @@ public class ChapterResponse {
   private boolean success;
   private String id;
   private String chapterName;
-  private int order;
   private String description;
   private String htmlContent;
   private String topicId;
   private List<String> imageAttachments = new ArrayList<>();
+  private List<Question> questions = new ArrayList<>();
   private boolean enableQuiz;
 }
