@@ -1,6 +1,7 @@
 package com.belajarkomputer.belakombackend.controller;
 
 import com.belajarkomputer.belakombackend.exceptions.ResourceNotFoundException;
+import com.belajarkomputer.belakombackend.model.request.UpdateUserRequest;
 import com.belajarkomputer.belakombackend.model.response.ApiResponse;
 import com.belajarkomputer.belakombackend.model.response.AuthResponse;
 import com.belajarkomputer.belakombackend.model.vo.UserVo;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,15 +53,16 @@ public class UserController {
     }
   }
 
-  @PostMapping("/updateCurrentlyLearningTopic/{topicId}")
-  public ResponseEntity<?> updateCurrentlyLearningTopic(
-      @AuthenticationPrincipal UserPrincipal userPrincipal, @PathVariable String topicId) {
+  @PostMapping("/updateUserData")
+  public ResponseEntity<?> updateUserData(
+      @AuthenticationPrincipal UserPrincipal userPrincipal,
+      @RequestBody UpdateUserRequest request) {
     if (Objects.isNull(userPrincipal)) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
           .body(new ApiResponse(false, "Cannot get current user, unauthorized"));
     }
     try {
-      UserVo userVo = this.userDetailsService.updateCurrentlyLearningTopic(userPrincipal.getId(), topicId);
+      UserVo userVo = this.userDetailsService.updateUserData(userPrincipal.getId(), request);
       return ResponseEntity.ok(AuthResponse.builder()
           .success(true)
           .name(userVo.getName())
