@@ -22,5 +22,6 @@ public class Topic {
   @Indexed(unique = true)
   private String topicName;
   private String description;
+  // chapterIds
   private List<String> chapterOrder;
 }

@@ -35,7 +35,7 @@ public class ChapterServiceImpl implements ChapterService {
     Topic topic = topicService.findTopicById(topicId);
 
     List<Chapter> orderedChapters = new ArrayList<>();
-    List<Chapter> chapters = this.chapterRepository.findAllChaptersByTopicId(topicId);
+    List<Chapter> chapters = this.chapterRepository.findChaptersByTopicId(topicId);
 
     if (CollectionUtils.isEmpty(chapters)) {
       return chapters;
@@ -46,8 +46,7 @@ public class ChapterServiceImpl implements ChapterService {
           chapters.stream().filter(chapter -> chapter.getId().equals(orderedId)).findFirst();
       chapterToAdd.ifPresent(orderedChapters::add);
     });
-
-
+    
     return orderedChapters;
   }
 

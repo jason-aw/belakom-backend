@@ -54,7 +54,7 @@ public class ChapterController {
           .topicId(chapter.getTopicId())
           .enableQuiz(chapter.isEnableQuiz())
           .imageAttachments(chapter.getImageAttachments())
-              .questions(chapter.getQuestions())
+          .questions(chapter.getQuestions())
           .build());
     } catch (BadRequestException ex) {
       log.error("Chapter not found");
@@ -65,9 +65,8 @@ public class ChapterController {
   @PostMapping("/create")
   public ResponseEntity<?> createChapter(@RequestBody CreateChapterRequest request) {
     try {
-      Chapter result = chapterService.createChapter(request);
-      return ResponseEntity.ok(ChapterResponse
-          .builder().success(true).build());
+      this.chapterService.createChapter(request);
+      return ResponseEntity.ok(new ApiResponse(true, "Chapter created"));
     } catch (Exception ex) {
       return ResponseEntity.badRequest().body(new ApiResponse(false, ex.getMessage()));
     }

@@ -9,6 +9,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.Email;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -28,4 +30,9 @@ public class User {
   private String providerId;
   private Role role;
   private String imageUrl;
+
+  // Limit to last 10 chapterIds
+  private List<String> lastSeenChapters = new ArrayList<>();
+  // based on last topic that the user clicked
+  private String currentlyLearningTopic;
 }

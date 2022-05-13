@@ -1,6 +1,7 @@
 package com.belajarkomputer.belakombackend.controller;
 
 import com.belajarkomputer.belakombackend.exceptions.BadRequestException;
+import com.belajarkomputer.belakombackend.exceptions.ResourceNotFoundException;
 import com.belajarkomputer.belakombackend.model.entity.User;
 import com.belajarkomputer.belakombackend.model.request.LoginRequest;
 import com.belajarkomputer.belakombackend.model.request.LogoutRequest;
@@ -8,12 +9,16 @@ import com.belajarkomputer.belakombackend.model.request.RegisterRequest;
 import com.belajarkomputer.belakombackend.model.response.ApiResponse;
 import com.belajarkomputer.belakombackend.model.response.AuthResponse;
 import com.belajarkomputer.belakombackend.model.vo.UserVo;
+import com.belajarkomputer.belakombackend.security.CustomUserDetailsService;
+import com.belajarkomputer.belakombackend.security.UserPrincipal;
 import com.belajarkomputer.belakombackend.service.AuthService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +29,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Objects;
 
 @RestController
 @RequestMapping(value = "/api/auth")
@@ -32,6 +38,7 @@ import java.net.URI;
 public class AuthController {
 
   private final AuthService authService;
+  private final CustomUserDetailsService userDetailsService;
 
   @PostMapping("/login")
   public ResponseEntity<AuthResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -44,7 +51,6 @@ public class AuthController {
           .refreshToken(userVo.getRefreshToken())
           .roles(userVo.getRoles())
           .email(userVo.getEmail())
-          .tokenType("Bearer")
           .build());
     } catch (DisabledException e) {
       e.printStackTrace();
@@ -89,7 +95,6 @@ public class AuthController {
           .refreshToken(userVo.getRefreshToken())
           .roles(userVo.getRoles())
           .email(userVo.getEmail())
-          .tokenType("Bearer")
           .build());
     } catch (BadCredentialsException e) {
       return ResponseEntity.status(400).body(AuthResponse.builder()
@@ -102,5 +107,26 @@ public class AuthController {
     log.info("logout request {}", request);
     this.authService.logout(request);
     return ResponseEntity.ok().body(null);
+  }
+
+  @GetMapping("/currentUser")
+  public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+    if (Objects.isNull(userPrincipal)) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+          .body(new ApiResponse(false, "Cannot get current user, unauthorized"));
+    }
+    try {
+      UserVo userVo = this.userDetailsService.findUserById(userPrincipal.getId());
+      return ResponseEntity.ok(AuthResponse.builder()
+          .success(true)
+          .name(userVo.getName())
+          .imageUrl(userVo.getImageUrl())
+          .lastSeenChapters(userVo.getLastSeenChapters())
+          .currentlyLearningTopic(userVo.getCurrentlyLearningTopic())
+          .build());
+    } catch (ResourceNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+          .body(new ApiResponse(false, e.getMessage()));
+    }
   }
 }

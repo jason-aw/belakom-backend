@@ -4,7 +4,9 @@ import com.belajarkomputer.belakombackend.model.entity.Chapter;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface ChapterRepository extends MongoRepository<Chapter, String>, ChapterRepositoryCustom {
+import java.util.List;
 
+@Repository
+public interface ChapterRepository extends MongoRepository<Chapter, String> {
+  List<Chapter> findChaptersByTopicId(String topicId);
 }
