@@ -61,7 +61,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         .build();
   }
 
-  public UserVo updateUserData(String userId, UpdateUserRequest request) throws BadRequestException {
+  public UserVo updateUserData(String userId, UpdateUserRequest request) {
     User user = this.userRepository.findById(userId).orElseThrow(
         () -> new ResourceNotFoundException("User", "id", userId)
     );

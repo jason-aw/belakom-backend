@@ -62,6 +62,7 @@ public class UserController {
           .body(new ApiResponse(false, "Cannot get current user, unauthorized"));
     }
     try {
+      log.info("UpdateUserData req: {}, user: {}", request, userPrincipal);
       UserVo userVo = this.userDetailsService.updateUserData(userPrincipal.getId(), request);
       return ResponseEntity.ok(AuthResponse.builder()
           .success(true)
@@ -70,8 +71,8 @@ public class UserController {
           .lastSeenChapters(userVo.getLastSeenChapters())
           .currentlyLearningTopic(userVo.getCurrentlyLearningTopic())
           .build());
-    } catch (ResourceNotFoundException e) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+    } catch (Exception e) {
+      return ResponseEntity.badRequest()
           .body(new ApiResponse(false, e.getMessage()));
     }
   }
