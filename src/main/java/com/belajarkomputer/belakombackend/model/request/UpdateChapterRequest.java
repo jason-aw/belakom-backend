@@ -1,15 +1,11 @@
 package com.belajarkomputer.belakombackend.model.request;
 
 import com.belajarkomputer.belakombackend.model.entity.Question;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class UpdateChapterRequest {
   private String id;
   private String chapterName;

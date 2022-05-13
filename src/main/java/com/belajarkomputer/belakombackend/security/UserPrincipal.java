@@ -1,5 +1,6 @@
 package com.belajarkomputer.belakombackend.security;
 
+import com.belajarkomputer.belakombackend.model.entity.Role;
 import com.belajarkomputer.belakombackend.model.entity.User;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,6 +12,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Data
 public class UserPrincipal implements OAuth2User, UserDetails {
@@ -19,23 +21,33 @@ public class UserPrincipal implements OAuth2User, UserDetails {
   private String password;
   private Collection<? extends GrantedAuthority> authorities;
   private Map<String, Object> attributes;
+  private Role role;
 
-  public UserPrincipal(String id, String email, String password, Collection<? extends GrantedAuthority> authorities) {
+  public UserPrincipal(String id,
+      String email,
+      String password,
+      Collection<? extends GrantedAuthority> authorities,
+      Role role) {
     this.id = id;
     this.email = email;
     this.password = password;
     this.authorities = authorities;
+    this.role = role;
   }
 
   public static UserPrincipal create(User user) {
     List<GrantedAuthority> authorities = Collections.
         singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
 
+    List<String> roles = authorities.stream().map(GrantedAuthority::getAuthority).collect(
+        Collectors.toList());
+
     return new UserPrincipal(
         user.getId(),
         user.getEmail(),
         user.getPassword(),
-        authorities
+        authorities,
+        user.getRole()
     );
   }
 
