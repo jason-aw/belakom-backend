@@ -51,6 +51,7 @@ public class AuthController {
           .refreshToken(userVo.getRefreshToken())
           .roles(userVo.getRoles())
           .email(userVo.getEmail())
+          .currentlyLearningTopic(userVo.getCurrentlyLearningTopic())
           .build());
     } catch (DisabledException e) {
       e.printStackTrace();
@@ -107,26 +108,5 @@ public class AuthController {
     log.info("logout request {}", request);
     this.authService.logout(request);
     return ResponseEntity.ok().body(null);
-  }
-
-  @GetMapping("/currentUser")
-  public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-    if (Objects.isNull(userPrincipal)) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-          .body(new ApiResponse(false, "Cannot get current user, unauthorized"));
-    }
-    try {
-      UserVo userVo = this.userDetailsService.findUserById(userPrincipal.getId());
-      return ResponseEntity.ok(AuthResponse.builder()
-          .success(true)
-          .name(userVo.getName())
-          .imageUrl(userVo.getImageUrl())
-          .lastSeenChapters(userVo.getLastSeenChapters())
-          .currentlyLearningTopic(userVo.getCurrentlyLearningTopic())
-          .build());
-    } catch (ResourceNotFoundException e) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-          .body(new ApiResponse(false, e.getMessage()));
-    }
   }
 }

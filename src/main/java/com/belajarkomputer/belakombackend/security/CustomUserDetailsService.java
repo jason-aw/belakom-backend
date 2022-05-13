@@ -4,6 +4,8 @@ import com.belajarkomputer.belakombackend.model.entity.User;
 import com.belajarkomputer.belakombackend.model.vo.UserVo;
 import com.belajarkomputer.belakombackend.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
@@ -50,6 +53,20 @@ public class CustomUserDetailsService implements UserDetailsService {
         .imageUrl(user.getImageUrl())
         .lastSeenChapters(user.getLastSeenChapters())
         .currentlyLearningTopic(user.getCurrentlyLearningTopic())
+        .build();
+  }
+
+  public UserVo updateCurrentlyLearningTopic(String userId, String topicId) {
+    User user = this.userRepository.findById(userId).orElseThrow(
+        () -> new ResourceNotFoundException("User", "id", userId)
+    );
+    user.setCurrentlyLearningTopic(topicId);
+    User updatedUser = this.userRepository.save(user);
+    return UserVo.builder()
+        .name(updatedUser.getName())
+        .imageUrl(updatedUser.getImageUrl())
+        .lastSeenChapters(updatedUser.getLastSeenChapters())
+        .currentlyLearningTopic(updatedUser.getCurrentlyLearningTopic())
         .build();
   }
 }
