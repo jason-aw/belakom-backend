@@ -6,11 +6,15 @@ import com.belajarkomputer.belakombackend.model.request.CreateTopicRequest;
 import com.belajarkomputer.belakombackend.model.request.UpdateTopicChapterOrderRequest;
 import com.belajarkomputer.belakombackend.model.request.UpdateTopicRequest;
 import com.belajarkomputer.belakombackend.model.response.ApiResponse;
+import com.belajarkomputer.belakombackend.model.response.TopicResponse;
+import com.belajarkomputer.belakombackend.model.vo.TopicVo;
+import com.belajarkomputer.belakombackend.security.UserPrincipal;
 import com.belajarkomputer.belakombackend.service.TopicService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,14 +31,14 @@ import java.util.List;
 @AllArgsConstructor
 @Slf4j
 public class TopicController {
-  
+
   private final TopicService topicService;
 
   @GetMapping("/all")
-  public ResponseEntity<?> getAllTopic() {
+  public ResponseEntity<?> getAllTopic(@AuthenticationPrincipal UserPrincipal userPrincipal) {
     try {
-      List<Topic> result = topicService.getAllTopic();
-      return ResponseEntity.ok(result);
+      List<TopicVo> result = topicService.getAllTopic(userPrincipal.getId());
+      return ResponseEntity.ok(TopicResponse.builder().topicData(result).success(true).error(null).build());
     } catch (Exception ex) {
       return ResponseEntity.badRequest().body(new ApiResponse(false, ex.getMessage()));
     }

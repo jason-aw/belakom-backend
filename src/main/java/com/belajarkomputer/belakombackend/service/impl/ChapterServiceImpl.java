@@ -2,9 +2,12 @@ package com.belajarkomputer.belakombackend.service.impl;
 
 import com.belajarkomputer.belakombackend.exceptions.BadRequestException;
 import com.belajarkomputer.belakombackend.model.entity.Chapter;
+import com.belajarkomputer.belakombackend.model.entity.ChapterProgress;
 import com.belajarkomputer.belakombackend.model.entity.Topic;
 import com.belajarkomputer.belakombackend.model.request.CreateChapterRequest;
 import com.belajarkomputer.belakombackend.model.request.UpdateChapterRequest;
+import com.belajarkomputer.belakombackend.model.vo.ChapterVo;
+import com.belajarkomputer.belakombackend.repository.ChapterProgressRepository;
 import com.belajarkomputer.belakombackend.repository.ChapterRepository;
 import com.belajarkomputer.belakombackend.service.ChapterService;
 import com.belajarkomputer.belakombackend.service.TopicService;
@@ -28,6 +31,7 @@ public class ChapterServiceImpl implements ChapterService {
   private ChapterRepository chapterRepository;
   private FileStorageService fileStorageService;
   private TopicService topicService;
+  private ChapterProgressRepository chapterProgressRepository;
 
   @Override
   public List<Chapter> getAllChaptersByTopicId(String topicId) {
@@ -48,6 +52,73 @@ public class ChapterServiceImpl implements ChapterService {
     });
     
     return orderedChapters;
+  }
+
+  @Override
+  public List<ChapterVo> getAllChaptersByTopicIdAndUserId(String topicId, String userId) {
+
+    Topic topic = topicService.findTopicById(topicId);
+
+    List<Chapter> orderedChapters = new ArrayList<>();
+    List<Chapter> chapters = this.chapterRepository.findChaptersByTopicId(topicId);
+
+    List<ChapterProgress> chapterProgressList =
+        this.chapterProgressRepository.findChapterProgressesByTopicIdAndUserId(topicId, userId);
+
+    if (CollectionUtils.isEmpty(chapters)) {
+      return null;
+    }
+
+    topic.getChapterOrder().forEach(orderedId -> {
+      Optional<Chapter> chapterToAdd =
+          chapters.stream().filter(chapter -> chapter.getId().equals(orderedId)).findFirst();
+      chapterToAdd.ifPresent(orderedChapters::add);
+    });
+
+    return createListOfChaptersResponse(orderedChapters, chapterProgressList);
+  }
+
+  private List<ChapterVo> createListOfChaptersResponse(List<Chapter> chapters, List<ChapterProgress> chapterProgressList) {
+    List<ChapterVo> chapterVos = new ArrayList<>();
+    chapters.forEach(chapter -> {
+      ChapterProgress existingChapterProgress = chapterProgressList.stream()
+          .filter(chapterProgress -> chapterProgress.getChapterId().equals(chapter.getId()))
+          .findFirst().orElse(null);
+
+      chapterVos.add(this.createChapterVo(chapter, existingChapterProgress));
+    });
+
+    return chapterVos;
+  }
+
+  private ChapterVo createChapterVo(Chapter chapter, ChapterProgress chapterProgress) {
+    return ChapterVo.builder()
+        .id(chapter.getId())
+        .topicId(chapter.getTopicId())
+        .enableQuiz(chapter.isEnableQuiz())
+        .chapterName(chapter.getChapterName())
+        .description(chapter.getDescription())
+        .htmlContent(chapter.getHtmlContent())
+        .imageAttachments(chapter.getImageAttachments())
+        .questions(chapter.getQuestions())
+        .chapterCompletion(
+            Objects.isNull(chapterProgress) ? 0 :
+                this.calculateChapterCompletion(chapterProgress, chapter.isEnableQuiz()))
+        .build();
+  }
+
+  private double calculateChapterCompletion(ChapterProgress chapterProgress, boolean enableQuiz) {
+    double completed = 0;
+
+    if (enableQuiz) {
+      completed += chapterProgress.isArticleCompleted() ? 0.5 : 0;
+      completed += chapterProgress.isQuizCompleted() ? 0.25 : 0;
+      completed += chapterProgress.getCorrect() == chapterProgress.getTotalQuestions() ? 0.25 : 0;
+    } else {
+      completed += chapterProgress.isArticleCompleted() ? 1 : 0;
+    }
+
+    return completed;
   }
 
   @Override

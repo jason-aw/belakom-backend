@@ -7,10 +7,13 @@ import com.belajarkomputer.belakombackend.model.request.CreateChapterRequest;
 import com.belajarkomputer.belakombackend.model.request.UpdateChapterRequest;
 import com.belajarkomputer.belakombackend.model.response.ApiResponse;
 import com.belajarkomputer.belakombackend.model.response.ChapterResponse;
+import com.belajarkomputer.belakombackend.model.vo.ChapterVo;
+import com.belajarkomputer.belakombackend.security.UserPrincipal;
 import com.belajarkomputer.belakombackend.service.ChapterService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +38,17 @@ public class ChapterController {
   public ResponseEntity<?> getAllChapterByTopicId(@RequestParam String id) {
     try {
       List<Chapter> result = chapterService.getAllChaptersByTopicId(id);
+      return ResponseEntity.ok(result);
+    } catch (Exception ex) {
+      return ResponseEntity.badRequest().body(new ApiResponse(false, ex.getMessage()));
+    }
+  }
+
+  @GetMapping("/getAllByTopicIdAndUserId")
+  public ResponseEntity<?> getAllChapterByTopicIdAndUserId(@RequestParam String topicId, @AuthenticationPrincipal
+      UserPrincipal userPrincipal) {
+    try {
+      List<ChapterVo> result = chapterService.getAllChaptersByTopicIdAndUserId(topicId, userPrincipal.getId());
       return ResponseEntity.ok(result);
     } catch (Exception ex) {
       return ResponseEntity.badRequest().body(new ApiResponse(false, ex.getMessage()));

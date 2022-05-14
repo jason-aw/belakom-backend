@@ -39,7 +39,6 @@ public class UserController {
     }
     try {
       UserVo userVo = this.userDetailsService.findUserById(userPrincipal.getId());
-      log.info("hai " + userVo);
       return ResponseEntity.ok(AuthResponse.builder()
           .success(true)
           .name(userVo.getName())

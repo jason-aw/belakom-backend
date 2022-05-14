@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping(value = "/api/progress")
@@ -68,14 +69,27 @@ public class ProgressController {
 
   @PostMapping("/chapter")
   public ResponseEntity<?> updateChapterProgress(@RequestBody ProgressRequest request,
-      @AuthenticationPrincipal UserPrincipal userPrincipal) {
-    ProgressVo progressVo = ProgressVo.builder()
-        .userId(userPrincipal.getId())
-        .chapterId(request.getChapterId())
-        .articleCompleted(request.isArticleCompleted())
-        .quizCompleted(request.getQuizCompleted())
-        .correct(request.getCorrect())
-        .build();
+      @AuthenticationPrincipal UserPrincipal userPrincipal) throws Exception {
+    ProgressVo progressVo;
+
+    if (Objects.nonNull(request.getArticleCompleted())) {
+      // update article complete
+      progressVo = ProgressVo.builder()
+          .userId(userPrincipal.getId())
+          .chapterId(request.getChapterId())
+          .articleCompleted(request.getArticleCompleted())
+          .build();
+    } else if (Objects.nonNull(request.getQuizCompleted())) {
+      // update quiz completed
+      progressVo = ProgressVo.builder()
+          .userId(userPrincipal.getId())
+          .chapterId(request.getChapterId())
+          .quizCompleted(request.getQuizCompleted())
+          .correct(request.getCorrect())
+          .build();
+    } else {
+      throw new Exception();
+    }
 
     try {
       this.progressService.updateOrCreateChapterProgress(progressVo);

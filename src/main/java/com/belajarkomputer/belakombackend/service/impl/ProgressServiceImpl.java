@@ -56,8 +56,9 @@ public class ProgressServiceImpl implements ProgressService {
     List<ChapterProgress> chapterProgressList =
         this.chapterProgressRepository.findChapterProgressesByTopicIdAndUserId(topicId, userId);
 
-    double totalCompletion = this.calculateCompletion(chapters, chapterProgressList);
+    double totalCompletion = this.calculateTopicCompletion(chapters, chapterProgressList);
     topicProgress.setTopicCompletion(totalCompletion);
+    this.topicProgressRepository.save(topicProgress);
     return topicProgress;
   }
 
@@ -84,19 +85,24 @@ public class ProgressServiceImpl implements ProgressService {
           .userId(progressVo.getUserId())
           .chapterId(progressVo.getChapterId())
           .topicId(chapter.getTopicId())
-          .articleCompleted(progressVo.isArticleCompleted())
-          .quizCompleted(progressVo.isQuizCompleted())
+          .articleCompleted(progressVo.getArticleCompleted())
+          .quizCompleted(false)
           .correct(progressVo.getCorrect())
           .totalQuestions(chapter.getQuestions().size())
           .build();
     } else {
-      chapterProgress.setArticleCompleted(progressVo.isArticleCompleted());
-      chapterProgress.setQuizCompleted(progressVo.isQuizCompleted());
-      chapterProgress.setCorrect(progressVo.getCorrect());
+      if (Objects.nonNull(progressVo.getArticleCompleted())) {
+        //update article complete doang
+        chapterProgress.setArticleCompleted(progressVo.getArticleCompleted());
+      } else if (Objects.nonNull(progressVo.getQuizCompleted())) {
+        //update quiz complete doang
+        chapterProgress.setQuizCompleted(progressVo.getQuizCompleted());
+        chapterProgress.setCorrect(progressVo.getCorrect());
+      }
     }
     ChapterProgress result = this.chapterProgressRepository.save(chapterProgress);
 
-    this.updateOrCreateTopicProgress(progressVo.getTopicId(), progressVo.getUserId());
+    this.updateOrCreateTopicProgress(result.getTopicId(), progressVo.getUserId());
 
     return result;
   }
@@ -114,14 +120,17 @@ public class ProgressServiceImpl implements ProgressService {
     return chapterProgressList;
   }
 
-  private double calculateCompletion(List<Chapter> chapterList,
+  private double calculateTopicCompletion(List<Chapter> chapterList,
       List<ChapterProgress> chapterProgressList) {
     int total = chapterList.size();
     total += (int) chapterList.stream().filter(Chapter::isEnableQuiz).count();
-    int completed = 0;
+    double completed = 0;
     for (ChapterProgress chapterProgress : chapterProgressList) {
-      completed = chapterProgress.isArticleCompleted() ? 1 : 0;
-      completed = chapterProgress.isQuizCompleted() ? 1 : 0;
+      completed += chapterProgress.isArticleCompleted() ? 1 : 0;
+      if (chapterProgress.isQuizCompleted()) {
+        completed += chapterProgress.isQuizCompleted() ? 0.5 : 0;
+        completed += chapterProgress.getCorrect() == chapterProgress.getTotalQuestions() ? 0.5 : 0;
+      }
     }
 
     return (double) completed / (double) total;

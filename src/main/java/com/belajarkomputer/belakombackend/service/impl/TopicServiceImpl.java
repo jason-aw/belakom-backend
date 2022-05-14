@@ -2,8 +2,11 @@ package com.belajarkomputer.belakombackend.service.impl;
 
 import com.belajarkomputer.belakombackend.exceptions.BadRequestException;
 import com.belajarkomputer.belakombackend.model.entity.Topic;
+import com.belajarkomputer.belakombackend.model.entity.TopicProgress;
 import com.belajarkomputer.belakombackend.model.request.CreateTopicRequest;
 import com.belajarkomputer.belakombackend.model.request.UpdateTopicRequest;
+import com.belajarkomputer.belakombackend.model.vo.TopicVo;
+import com.belajarkomputer.belakombackend.repository.TopicProgressRepository;
 import com.belajarkomputer.belakombackend.repository.TopicRepository;
 import com.belajarkomputer.belakombackend.service.TopicService;
 import lombok.AllArgsConstructor;
@@ -21,10 +24,40 @@ import java.util.Objects;
 public class TopicServiceImpl implements TopicService {
 
   private TopicRepository topicRepository;
+  private TopicProgressRepository topicProgressRepository;
 
   @Override
-  public List<Topic> getAllTopic() {
-    return this.topicRepository.findAll();
+  public List<TopicVo> getAllTopic(String userId) {
+
+    List<Topic> topics =  this.topicRepository.findAll();
+    List<TopicProgress> topicProgressList =
+        this.topicProgressRepository.findTopicProgressesByUserId(userId);
+
+    return createTopicsResponse(topics, topicProgressList);
+  }
+
+  private List<TopicVo> createTopicsResponse(List<Topic> topics, List<TopicProgress> topicProgressList) {
+
+    List<TopicVo> topicVos = new ArrayList<>();
+    topics.forEach(topic -> {
+      TopicProgress existingTopicProgress = topicProgressList.stream()
+          .filter(topicProgress -> topicProgress.getTopicId().equals(topic.getId())).findFirst()
+          .orElse(null);
+
+      topicVos.add(this.createTopicVo(topic, existingTopicProgress));
+    });
+
+    return topicVos;
+  }
+
+  private TopicVo createTopicVo(Topic topic, TopicProgress topicProgress) {
+    return TopicVo.builder()
+        .id(topic.getId())
+        .topicName(topic.getTopicName())
+        .description(topic.getDescription())
+        .chapterOrder(topic.getChapterOrder())
+        .topicCompletion(Objects.isNull(topicProgress) ? 0 : topicProgress.getTopicCompletion())
+        .build();
   }
 
   @Override

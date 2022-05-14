@@ -5,18 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProgressVo {
-  private String userId;
-  private String topicId;
+public class TopicVo {
+  private String id;
+  private String topicName;
+  private String description;
+  private List<String> chapterOrder;
   private double topicCompletion;
-
-  private String chapterId;
-  private Boolean articleCompleted;
-  private Boolean quizCompleted;
-  private int correct;
-  private int totalQuestions;
 }
