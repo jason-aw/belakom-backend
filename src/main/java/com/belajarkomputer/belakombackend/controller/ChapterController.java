@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping(value = "/api/chapter")
@@ -35,25 +36,31 @@ public class ChapterController {
   private ChapterService chapterService;
 
   @GetMapping("/getAllByTopicId")
-  public ResponseEntity<?> getAllChapterByTopicId(@RequestParam String id) {
-    try {
-      List<Chapter> result = chapterService.getAllChaptersByTopicId(id);
-      return ResponseEntity.ok(result);
-    } catch (Exception ex) {
-      return ResponseEntity.badRequest().body(new ApiResponse(false, ex.getMessage()));
+  public ResponseEntity<?> getAllChapterByTopicId(@RequestParam String id,
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
+    String userId = "";
+    if (!Objects.isNull(userPrincipal)) {
+      userId = userPrincipal.getId();
     }
+    //      List<Chapter> result = chapterService.getAllChaptersByTopicId(id);
+    //      return ResponseEntity.ok(result);
+
+    List<ChapterVo> result = chapterService.getAllChaptersByTopicIdAndUserId(id, userId);
+    return ResponseEntity.ok(result);
   }
 
-  @GetMapping("/getAllByTopicIdAndUserId")
-  public ResponseEntity<?> getAllChapterByTopicIdAndUserId(@RequestParam String topicId, @AuthenticationPrincipal
-      UserPrincipal userPrincipal) {
-    try {
-      List<ChapterVo> result = chapterService.getAllChaptersByTopicIdAndUserId(topicId, userPrincipal.getId());
-      return ResponseEntity.ok(result);
-    } catch (Exception ex) {
-      return ResponseEntity.badRequest().body(new ApiResponse(false, ex.getMessage()));
-    }
-  }
+//  @GetMapping("/getAllByTopicIdAndUserId")
+//  public ResponseEntity<?> getAllChapterByTopicIdAndUserId(@RequestParam String topicId,
+//      @AuthenticationPrincipal
+//          UserPrincipal userPrincipal) {
+//    try {
+//      List<ChapterVo> result =
+//          chapterService.getAllChaptersByTopicIdAndUserId(topicId, userPrincipal.getId());
+//      return ResponseEntity.ok(result);
+//    } catch (Exception ex) {
+//      return ResponseEntity.badRequest().body(new ApiResponse(false, ex.getMessage()));
+//    }
+//  }
 
   @GetMapping("/{id}")
   public ResponseEntity<ChapterResponse> getChapterById(@PathVariable String id) {

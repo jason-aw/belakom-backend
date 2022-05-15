@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/api/topic")
@@ -36,12 +38,13 @@ public class TopicController {
 
   @GetMapping("/all")
   public ResponseEntity<?> getAllTopic(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-    try {
-      List<TopicVo> result = topicService.getAllTopic(userPrincipal.getId());
-      return ResponseEntity.ok(TopicResponse.builder().topicData(result).success(true).error(null).build());
-    } catch (Exception ex) {
-      return ResponseEntity.badRequest().body(new ApiResponse(false, ex.getMessage()));
+    log.info("user principal: {}", userPrincipal);
+    String userId = "";
+    if (!Objects.isNull(userPrincipal)) {
+      userId = userPrincipal.getId();
     }
+    List<TopicVo> result = topicService.getAllTopic(userId);
+    return ResponseEntity.ok(TopicResponse.builder().topicData(result).success(true).error(null).build());
   }
 
   @GetMapping("/{topicName}")
