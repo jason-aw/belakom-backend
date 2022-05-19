@@ -17,11 +17,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +36,7 @@ public class CommentServiceImpl implements CommentService {
   @Override
   public CommentsVo getCommentsByChapterId(String chapterId) throws ResourceNotFoundException {
 
-    List<String> userIdToGet = new ArrayList<>();
+    Set<String> userIdToGet = new HashSet<>();
     List<Comment> mainComments = this.commentRepository.findMainCommentsByChapterId(chapterId);
     if (CollectionUtils.isEmpty(mainComments)) {
       throw new ResourceNotFoundException("Comments", "chapterId", chapterId);

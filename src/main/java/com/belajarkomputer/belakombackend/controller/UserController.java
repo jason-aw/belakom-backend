@@ -35,7 +35,8 @@ public class UserController {
   public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal UserPrincipal userPrincipal) {
     if (Objects.isNull(userPrincipal)) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-          .body(new ApiResponse(false, "Cannot get current user, unauthorized"));
+          .body(ApiResponse.builder().success(false)
+              .message("Cannot get current user, unauthorized").build());
     }
     try {
       UserVo userVo = this.userDetailsService.findUserById(userPrincipal.getId());
@@ -48,7 +49,7 @@ public class UserController {
           .build());
     } catch (ResourceNotFoundException e) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-          .body(new ApiResponse(false, e.getMessage()));
+          .body(ApiResponse.builder().success(false).message(e.getMessage()).build());
     }
   }
 
@@ -58,7 +59,8 @@ public class UserController {
       @RequestBody UpdateUserRequest request) {
     if (Objects.isNull(userPrincipal)) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-          .body(new ApiResponse(false, "Cannot get current user, unauthorized"));
+          .body(ApiResponse.builder().success(false)
+              .message("Cannot get current user, unauthorized").build());
     }
     try {
       log.info("UpdateUserData req: {}, user: {}", request, userPrincipal);
@@ -72,7 +74,7 @@ public class UserController {
           .build());
     } catch (Exception e) {
       return ResponseEntity.badRequest()
-          .body(new ApiResponse(false, e.getMessage()));
+          .body(ApiResponse.builder().success(false).message(e.getMessage()).build());
     }
   }
 

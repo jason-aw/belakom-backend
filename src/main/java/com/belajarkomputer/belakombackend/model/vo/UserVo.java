@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserVo {
+  private String userId;
   private String email;
   private String accessToken;
   private String refreshToken;

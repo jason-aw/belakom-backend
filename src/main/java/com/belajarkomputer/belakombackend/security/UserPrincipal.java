@@ -39,9 +39,6 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     List<GrantedAuthority> authorities = Collections.
         singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
 
-    List<String> roles = authorities.stream().map(GrantedAuthority::getAuthority).collect(
-        Collectors.toList());
-
     return new UserPrincipal(
         user.getId(),
         user.getEmail(),

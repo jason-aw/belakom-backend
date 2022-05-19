@@ -44,7 +44,6 @@ public class AuthController {
           .refreshToken(userVo.getRefreshToken())
           .roles(userVo.getRoles())
           .email(userVo.getEmail())
-          .currentlyLearningTopic(userVo.getCurrentlyLearningTopic())
           .build());
     } catch (DisabledException e) {
       e.printStackTrace();
