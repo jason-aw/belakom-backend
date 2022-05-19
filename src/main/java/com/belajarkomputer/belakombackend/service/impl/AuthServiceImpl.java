@@ -79,6 +79,7 @@ public class AuthServiceImpl implements AuthService {
         .collect(Collectors.toList());
     return UserVo.builder()
         .email(principal.getEmail())
+        .userId(principal.getId())
         .accessToken(this.tokenProvider.createAccessToken(authentication))
         .refreshToken(this.tokenProvider.createRefreshToken(authentication))
         .roles(roles)

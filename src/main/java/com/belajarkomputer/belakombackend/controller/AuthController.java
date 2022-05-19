@@ -38,12 +38,14 @@ public class AuthController {
     log.info("login request {}", loginRequest);
     try {
       UserVo userVo = this.authService.authenticateUser(loginRequest);
+      log.info("eek" + userVo);
       return ResponseEntity.ok(AuthResponse.builder()
           .success(true)
           .accessToken(userVo.getAccessToken())
           .refreshToken(userVo.getRefreshToken())
           .roles(userVo.getRoles())
           .email(userVo.getEmail())
+          .userId(userVo.getUserId())
           .build());
     } catch (DisabledException e) {
       e.printStackTrace();

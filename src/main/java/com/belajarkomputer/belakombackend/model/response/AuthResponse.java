@@ -19,6 +19,7 @@ public class AuthResponse {
   private String email;
   private boolean success;
   private String error;
+  private String userId;
 
   private String name;
   private String imageUrl;
