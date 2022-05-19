@@ -5,6 +5,7 @@ import com.belajarkomputer.belakombackend.model.entity.User;
 import com.belajarkomputer.belakombackend.model.request.LoginRequest;
 import com.belajarkomputer.belakombackend.model.request.LogoutRequest;
 import com.belajarkomputer.belakombackend.model.request.RegisterRequest;
+import com.belajarkomputer.belakombackend.model.request.ResetPasswordRequest;
 import com.belajarkomputer.belakombackend.model.response.ApiResponse;
 import com.belajarkomputer.belakombackend.model.response.AuthResponse;
 import com.belajarkomputer.belakombackend.model.vo.UserVo;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -100,5 +102,33 @@ public class AuthController {
     this.authService.logout(request);
     return ResponseEntity.ok().body(ApiResponse.builder()
         .success(true).build());
+  }
+
+  @PostMapping("/forgotPassword")
+  public ResponseEntity<?> forgotPassword(@RequestBody LoginRequest request) {
+    log.info("forgot password for {}", request.getEmail());
+    try {
+      this.authService.forgotPassword(request.getEmail());
+    } catch (UsernameNotFoundException e) {
+      return ResponseEntity.badRequest().body(ApiResponse.builder()
+          .success(false).message(e.getMessage()).build());
+    } catch (Exception e) {
+      return ResponseEntity.internalServerError().body(ApiResponse.builder()
+          .success(false).message(e.getMessage()).build());
+    }
+    return ResponseEntity.ok(ApiResponse.builder().success(true).message("Please check your email").build());
+  }
+
+  @PostMapping("/resetPassword")
+  public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
+    log.info("reset password");
+    try {
+      this.authService.resetPassword(request);
+      return ResponseEntity.ok().body(ApiResponse.builder()
+          .success(true).message("Password reset successful").build());
+    } catch (Exception e) {
+      return ResponseEntity.badRequest().body(ApiResponse.builder()
+          .success(false).message(e.getMessage()).build());
+    }
   }
 }

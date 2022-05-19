@@ -12,12 +12,6 @@ services:
     volumes:
       - 'mongodata:/data/db'
 
-  maildev:
-    container_name: maildev_local
-    image: maildev/maildev
-    ports:
-      - '1080:1080'
-
   redis:
     image: 'docker.io/bitnami/redis:5.0'
     container_name: redis_local
