@@ -22,6 +22,6 @@ public class UserVo {
   private String name;
   private String imageUrl;
 
-  private List<String> lastSeenChapters = new ArrayList<>();
+  private List<String> lastSeenChapters;
   private String currentlyLearningTopic;
 }

@@ -1,5 +1,6 @@
 package com.belajarkomputer.belakombackend.service.impl;
 
+import com.belajarkomputer.belakombackend.config.AppProperties;
 import com.belajarkomputer.belakombackend.exceptions.BadRequestException;
 import com.belajarkomputer.belakombackend.model.entity.Provider;
 import com.belajarkomputer.belakombackend.model.entity.Role;
@@ -7,10 +8,12 @@ import com.belajarkomputer.belakombackend.model.entity.User;
 import com.belajarkomputer.belakombackend.model.request.LoginRequest;
 import com.belajarkomputer.belakombackend.model.request.LogoutRequest;
 import com.belajarkomputer.belakombackend.model.request.RegisterRequest;
+import com.belajarkomputer.belakombackend.model.request.ResetPasswordRequest;
 import com.belajarkomputer.belakombackend.model.vo.UserVo;
 import com.belajarkomputer.belakombackend.repository.UserRepository;
 import com.belajarkomputer.belakombackend.security.UserPrincipal;
 import com.belajarkomputer.belakombackend.service.AuthService;
+import com.belajarkomputer.belakombackend.service.MailService;
 import com.belajarkomputer.belakombackend.utils.TokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.AllArgsConstructor;
@@ -21,12 +24,16 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,6 +48,10 @@ public class AuthServiceImpl implements AuthService {
   private AuthenticationManager authenticationManager;
 
   private TokenProvider tokenProvider;
+
+  private AppProperties properties;
+
+  private MailService mailService;
 
   @Override
   public User registerUser(RegisterRequest request) {
@@ -118,5 +129,39 @@ public class AuthServiceImpl implements AuthService {
       }
     } catch (ExpiredJwtException ignored) {
     }
+  }
+
+  @Override
+  public void forgotPassword(String email) throws Exception {
+    User user = this.userRepository.findByEmail(email);
+
+    if (Objects.isNull(user)) {
+      throw new UsernameNotFoundException("User not found with email : " + email);
+    }
+
+    String token = UUID.randomUUID().toString();
+    user.setResetPasswordToken(token);
+    Calendar calendar = Calendar.getInstance();
+    calendar.add(Calendar.SECOND, (int) this.properties.getAuth().getPasswordResetTokenExpirationSec());
+    user.setResetPasswordTokenExpiry(calendar.getTime());
+    this.userRepository.save(user);
+
+    this.mailService.sendPasswordResetEmail(email, token);
+  }
+
+
+  @Override
+  public void resetPassword(ResetPasswordRequest request) {
+    User user = this.userRepository.findUserByResetPasswordToken(request.getToken());
+    if (Objects.isNull(user)) {
+      throw new UsernameNotFoundException("User not found");
+    }
+    if (Calendar.getInstance().after(user.getResetPasswordTokenExpiry())) {
+      throw new BadRequestException("Token expired");
+    }
+    user.setPassword(this.passwordEncoder.encode(request.getPassword()));
+    user.setResetPasswordToken(null);
+    user.setResetPasswordTokenExpiry(null);
+    this.userRepository.save(user);
   }
 }

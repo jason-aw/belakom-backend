@@ -9,12 +9,22 @@ import java.util.List;
 public class AppProperties {
   private final Auth auth = new Auth();
   private final OAuth2 oauth2 = new OAuth2();
+  private String resetPasswordPage;
+
+  public String getResetPasswordPage() {
+    return resetPasswordPage;
+  }
+
+  public void setResetPasswordPage(String resetPasswordPage) {
+    this.resetPasswordPage = resetPasswordPage;
+  }
 
   public static class Auth {
     private String tokenSecret;
     private long accessTokenExpirationSec;
     private long refreshTokenExpirationSec;
     private long googleAccessTokenExpirationSec;
+    private long passwordResetTokenExpirationSec;
 
     public long getGoogleAccessTokenExpirationSec() {
       return googleAccessTokenExpirationSec;
@@ -46,6 +56,14 @@ public class AppProperties {
 
     public void setAccessTokenExpirationSec(long accessTokenExpirationSec) {
       this.accessTokenExpirationSec = accessTokenExpirationSec;
+    }
+
+    public long getPasswordResetTokenExpirationSec() {
+      return passwordResetTokenExpirationSec;
+    }
+
+    public void setPasswordResetTokenExpirationSec(long passwordResetTokenExpirationSec) {
+      this.passwordResetTokenExpirationSec = passwordResetTokenExpirationSec;
     }
   }
 
