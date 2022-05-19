@@ -1,7 +1,7 @@
 package com.belajarkomputer.belakombackend.controller;
 
 import com.belajarkomputer.belakombackend.model.entity.FileInfo;
-import com.belajarkomputer.belakombackend.model.response.FilesResponse;
+import com.belajarkomputer.belakombackend.model.response.ApiResponse;
 import com.belajarkomputer.belakombackend.service.FileStorageService;
 import com.belajarkomputer.belakombackend.utils.FileHelper;
 import lombok.AllArgsConstructor;
@@ -33,28 +33,31 @@ public class FilesController {
   private FileStorageService fileStorageService;
 
   @PostMapping(value = "/upload")
-  public ResponseEntity<FilesResponse> uploadFile(@RequestParam("file") MultipartFile file) {
+  public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
     try {
       Path path = this.fileStorageService.save(file);
       String filename = path.getFileName().toString();
       String generatedUrl = FileHelper.generateUrl(path.getFileName().toString());
       log.info("file uploaded: {}", generatedUrl);
-      return ResponseEntity.ok().body(new FilesResponse(true, generatedUrl, filename));
+      return ResponseEntity.ok().body(ApiResponse.builder().success(true)
+          .value(new FileInfo(generatedUrl, filename)).build());
     } catch (Exception e) {
-      String message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+      String message = "Could not upload the file: " + file.getOriginalFilename();
       log.error(message);
-      return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new FilesResponse(false, message, null));
+      return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+          .body(ApiResponse.builder().success(false).message(message).build());
     }
   }
 
   @GetMapping("/getAll")
-  public ResponseEntity<List<FileInfo>> getListFiles() {
+  public ResponseEntity<?> getListFiles() {
     List<FileInfo> fileInfos = this.fileStorageService.loadAll().map(path -> {
       String filename = path.getFileName().toString();
       String url = FileHelper.generateUrl(filename);
       return new FileInfo(filename, url);
     }).collect(Collectors.toList());
-    return ResponseEntity.status(HttpStatus.OK).body(fileInfos);
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ApiResponse.builder().success(true).value(fileInfos).build());
   }
 
   @GetMapping("/{filename:.+}")
@@ -67,8 +70,8 @@ public class FilesController {
   }
 
   @DeleteMapping("/{filename:.+}")
-  public ResponseEntity<FilesResponse> deleteFile(@PathVariable String filename) {
+  public ResponseEntity<?> deleteFile(@PathVariable String filename) {
     boolean result = this.fileStorageService.delete(filename);
-    return ResponseEntity.ok().body(new FilesResponse(result, null, filename));
+    return ResponseEntity.ok().body(ApiResponse.builder().success(result).build());
   }
 }

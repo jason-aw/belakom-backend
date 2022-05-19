@@ -1,6 +1,7 @@
 package com.belajarkomputer.belakombackend.service.impl;
 
 import com.belajarkomputer.belakombackend.exceptions.BadRequestException;
+import com.belajarkomputer.belakombackend.exceptions.ResourceNotFoundException;
 import com.belajarkomputer.belakombackend.model.entity.Chapter;
 import com.belajarkomputer.belakombackend.model.entity.ChapterProgress;
 import com.belajarkomputer.belakombackend.model.entity.Topic;
@@ -141,7 +142,7 @@ public class ChapterServiceImpl implements ChapterService {
   @Override
   public void deleteChapter(String id) {
     if (!this.chapterRepository.findById(id).isPresent()) {
-      throw new BadRequestException("Chapter with id " + id + "not found");
+      throw new ResourceNotFoundException("Chapter", "id", id);
     }
     Chapter chapter = this.findChapterById(id);
     chapter.getImageAttachments().forEach(filename -> this.fileStorageService.delete(filename));
@@ -167,7 +168,7 @@ public class ChapterServiceImpl implements ChapterService {
   public Chapter findChapterById(String id) {
     Chapter chapter = this.chapterRepository.findById(id).orElse(null);
     if (Objects.isNull(chapter)) {
-      throw new BadRequestException("Chapter with id " + id + "not found");
+      throw new ResourceNotFoundException("Chapter", "id", id);
     }
     return chapter;
   }

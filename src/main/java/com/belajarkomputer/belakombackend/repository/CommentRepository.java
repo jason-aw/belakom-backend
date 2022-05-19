@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface CommentRepository extends MongoRepository<Comment, String> {
-  @Query(value = "{'chapterId': ?0, 'parentCommentId': {$exists: false}", sort = "{'lastUpdated': 1}")
+  @Query(value = "{'chapterId': ?0, 'parentCommentId': {$exists: false}}", sort = "{'lastUpdated': 1}")
   List<Comment> findMainCommentsByChapterId(String chapterId);
   @Query(sort = "{'lastUpdated': 1}")
   List<Comment> findCommentsByParentCommentId(String parentCommentId);

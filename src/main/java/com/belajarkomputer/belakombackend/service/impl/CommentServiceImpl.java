@@ -7,7 +7,9 @@ import com.belajarkomputer.belakombackend.model.entity.Role;
 import com.belajarkomputer.belakombackend.model.request.CommentRequest;
 import com.belajarkomputer.belakombackend.model.request.EditCommentRequest;
 import com.belajarkomputer.belakombackend.model.vo.CommentsVo;
+import com.belajarkomputer.belakombackend.model.vo.UserVo;
 import com.belajarkomputer.belakombackend.repository.CommentRepository;
+import com.belajarkomputer.belakombackend.security.CustomUserDetailsService;
 import com.belajarkomputer.belakombackend.security.UserPrincipal;
 import com.belajarkomputer.belakombackend.service.CommentService;
 import lombok.AllArgsConstructor;
@@ -15,10 +17,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -26,10 +30,12 @@ import java.util.Objects;
 public class CommentServiceImpl implements CommentService {
 
   private CommentRepository commentRepository;
+  private CustomUserDetailsService userDetailsService;
 
   @Override
   public CommentsVo getCommentsByChapterId(String chapterId) throws ResourceNotFoundException {
 
+    List<String> userIdToGet = new ArrayList<>();
     List<Comment> mainComments = this.commentRepository.findMainCommentsByChapterId(chapterId);
     if (CollectionUtils.isEmpty(mainComments)) {
       throw new ResourceNotFoundException("Comments", "chapterId", chapterId);
@@ -38,12 +44,27 @@ public class CommentServiceImpl implements CommentService {
     Map<String, List<Comment>> commentRepliesMap = new HashMap<>();
     for (Comment comment : mainComments) {
       String commentId = comment.getId();
+      userIdToGet.add(comment.getUserId());
       List<Comment> replies = this.commentRepository.findCommentsByParentCommentId(commentId);
       commentRepliesMap.put(commentId, replies);
+      userIdToGet.addAll(replies.stream().map(Comment::getUserId).collect(Collectors.toList()));
     }
+
+    Map<String, UserVo> usersMap = new HashMap<>();
+    for (String userId : userIdToGet) {
+      UserVo userVo;
+      try {
+        userVo = userDetailsService.findUserDataById(userId);
+      } catch (Exception e) {
+        userVo = null;
+      }
+      usersMap.put(userId, userVo);
+    }
+
     return CommentsVo.builder()
         .mainComments(mainComments)
         .commentRepliesMap(commentRepliesMap)
+        .usersMap(usersMap)
         .build();
   }
 

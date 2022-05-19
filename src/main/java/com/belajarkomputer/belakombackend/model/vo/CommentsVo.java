@@ -18,4 +18,6 @@ public class CommentsVo {
   private List<Comment> mainComments;
   // <mainCommentId, List<Comment> replies>
   private Map<String, List<Comment>> commentRepliesMap = new HashMap<>();
+  // userId, UserVo
+  private Map<String, UserVo> usersMap = new HashMap<>();
 }

@@ -61,6 +61,17 @@ public class CustomUserDetailsService implements UserDetailsService {
         .build();
   }
 
+  public UserVo findUserDataById(String id) {
+    User user = this.userRepository.findById(id).orElseThrow(
+        () -> new ResourceNotFoundException("User", "id", id)
+    );
+
+    return UserVo.builder()
+        .name(user.getName())
+        .imageUrl(user.getImageUrl())
+        .build();
+  }
+
   public UserVo updateUserData(String userId, UpdateUserRequest request) {
     User user = this.userRepository.findById(userId).orElseThrow(
         () -> new ResourceNotFoundException("User", "id", userId)
