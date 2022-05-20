@@ -138,6 +138,9 @@ public class AuthServiceImpl implements AuthService {
     if (Objects.isNull(user)) {
       throw new UsernameNotFoundException("User not found with email : " + email);
     }
+    if (Provider.GOOGLE.equals(user.getProvider())) {
+      throw new BadRequestException("This account is logged in via google, can't reset password here");
+    }
 
     String token = UUID.randomUUID().toString();
     user.setResetPasswordToken(token);
@@ -157,6 +160,9 @@ public class AuthServiceImpl implements AuthService {
       throw new UsernameNotFoundException("User not found");
     }
     if (Calendar.getInstance().after(user.getResetPasswordTokenExpiry())) {
+      user.setResetPasswordToken(null);
+      user.setResetPasswordTokenExpiry(null);
+      this.userRepository.save(user);
       throw new BadRequestException("Token expired");
     }
     user.setPassword(this.passwordEncoder.encode(request.getPassword()));

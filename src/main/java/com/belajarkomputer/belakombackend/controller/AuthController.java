@@ -111,11 +111,8 @@ public class AuthController {
     log.info("forgot password for {}", request.getEmail());
     try {
       this.authService.forgotPassword(request.getEmail());
-    } catch (UsernameNotFoundException e) {
-      return ResponseEntity.badRequest().body(ApiResponse.builder()
-          .success(false).message(e.getMessage()).build());
     } catch (Exception e) {
-      return ResponseEntity.internalServerError().body(ApiResponse.builder()
+      return ResponseEntity.badRequest().body(ApiResponse.builder()
           .success(false).message(e.getMessage()).build());
     }
     return ResponseEntity.ok(ApiResponse.builder().success(true).message("Please check your email").build());
