@@ -43,6 +43,7 @@ public class UserController {
       return ResponseEntity.ok(AuthResponse.builder()
           .success(true)
           .name(userVo.getName())
+          .email(userVo.getEmail())
           .imageUrl(userVo.getImageUrl())
           .lastSeenChapters(userVo.getLastSeenChapters())
           .currentlyLearningTopic(userVo.getCurrentlyLearningTopic())

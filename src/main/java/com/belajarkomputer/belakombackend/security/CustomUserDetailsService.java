@@ -55,6 +55,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     return UserVo.builder()
         .name(user.getName())
+        .email(user.getEmail())
         .imageUrl(user.getImageUrl())
         .lastSeenChapters(user.getLastSeenChapters())
         .currentlyLearningTopic(user.getCurrentlyLearningTopic())
