@@ -73,7 +73,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         .build();
   }
 
-  public UserVo updateUserData(String userId, UpdateUserRequest request) {
+  public void updateUserData(String userId, UpdateUserRequest request) {
     User user = this.userRepository.findById(userId).orElseThrow(
         () -> new ResourceNotFoundException("User", "id", userId)
     );
@@ -96,12 +96,6 @@ public class CustomUserDetailsService implements UserDetailsService {
       lastSeenChapters.add(0, chapterToAdd);
     }
 
-    User updatedUser = this.userRepository.save(user);
-    return UserVo.builder()
-        .name(updatedUser.getName())
-        .imageUrl(updatedUser.getImageUrl())
-        .lastSeenChapters(updatedUser.getLastSeenChapters())
-        .currentlyLearningTopic(updatedUser.getCurrentlyLearningTopic())
-        .build();
+    this.userRepository.save(user);
   }
 }

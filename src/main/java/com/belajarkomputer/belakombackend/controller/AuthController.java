@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,7 +39,6 @@ public class AuthController {
     log.info("login request {}", loginRequest);
     try {
       UserVo userVo = this.authService.authenticateUser(loginRequest);
-      log.info("eek" + userVo);
       return ResponseEntity.ok(AuthResponse.builder()
           .success(true)
           .accessToken(userVo.getAccessToken())

@@ -63,6 +63,7 @@ public class AuthServiceImpl implements AuthService {
     User user = User.builder()
         .name(request.getName())
         .email(request.getEmail())
+        .imageUrl("localhost:8080/api/files/default-profile.png")
         .password(request.getPassword())
         .provider(Provider.LOCAL)
         .role(Role.USER)

@@ -65,14 +65,8 @@ public class UserController {
     }
     try {
       log.info("UpdateUserData req: {}, user: {}", request, userPrincipal);
-      UserVo userVo = this.userDetailsService.updateUserData(userPrincipal.getId(), request);
-      return ResponseEntity.ok(AuthResponse.builder()
-          .success(true)
-          .name(userVo.getName())
-          .imageUrl(userVo.getImageUrl())
-          .lastSeenChapters(userVo.getLastSeenChapters())
-          .currentlyLearningTopic(userVo.getCurrentlyLearningTopic())
-          .build());
+      this.userDetailsService.updateUserData(userPrincipal.getId(), request);
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     } catch (Exception e) {
       return ResponseEntity.badRequest()
           .body(ApiResponse.builder().success(false).message(e.getMessage()).build());
