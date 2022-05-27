@@ -40,7 +40,7 @@ public class FilesController {
       String generatedUrl = FileHelper.generateUrl(path.getFileName().toString());
       log.info("file uploaded: {}", generatedUrl);
       return ResponseEntity.ok().body(ApiResponse.builder().success(true)
-          .value(new FileInfo(generatedUrl, filename)).build());
+          .value(new FileInfo(filename, generatedUrl)).build());
     } catch (Exception e) {
       String message = "Could not upload the file: " + file.getOriginalFilename();
       log.error(message);

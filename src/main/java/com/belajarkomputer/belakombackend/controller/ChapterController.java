@@ -85,9 +85,10 @@ public class ChapterController {
   @PutMapping("/update")
   public ResponseEntity<?> updateChapter(@RequestBody UpdateChapterRequest request) {
     try {
-      this.chapterService.updateChapter(request);
-      return ResponseEntity.ok(ApiResponse.builder().success(true).build());
-    } catch (BadRequestException ex) {
+      Chapter chapter = this.chapterService.updateChapter(request);
+      return ResponseEntity.ok(ApiResponse.builder().success(true)
+          .value(chapter).build());
+    } catch (Exception ex) {
       return ResponseEntity.badRequest().body(ApiResponse.builder()
           .success(false).message(ex.getMessage()).build());
     }
