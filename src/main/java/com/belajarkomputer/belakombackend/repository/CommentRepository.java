@@ -13,4 +13,6 @@ public interface CommentRepository extends MongoRepository<Comment, String> {
   List<Comment> findMainCommentsByChapterId(String chapterId);
   @Query(sort = "{'lastUpdated': 1}")
   List<Comment> findCommentsByParentCommentId(String parentCommentId);
+
+  void deleteCommentsByChapterId(String chapterId);
 }

@@ -1,6 +1,5 @@
 package com.belajarkomputer.belakombackend.service.impl;
 
-import com.belajarkomputer.belakombackend.exceptions.ResourceNotFoundException;
 import com.belajarkomputer.belakombackend.model.entity.Chapter;
 import com.belajarkomputer.belakombackend.model.entity.ChapterProgress;
 import com.belajarkomputer.belakombackend.model.entity.TopicProgress;
@@ -9,11 +8,9 @@ import com.belajarkomputer.belakombackend.repository.ChapterProgressRepository;
 import com.belajarkomputer.belakombackend.repository.TopicProgressRepository;
 import com.belajarkomputer.belakombackend.service.ChapterService;
 import com.belajarkomputer.belakombackend.service.ProgressService;
-import io.jsonwebtoken.lang.Collections;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -28,21 +25,20 @@ public class ProgressServiceImpl implements ProgressService {
   private ChapterService chapterService;
 
   @Override
-  public List<TopicProgress> findTopicProgressByUserId(String userId)
-      throws ResourceNotFoundException {
-    List<TopicProgress> topicProgressList =
-        this.topicProgressRepository.findTopicProgressesByUserId(userId);
-
-    if (Collections.isEmpty(topicProgressList)) {
-      throw new ResourceNotFoundException("Topic Progress", "userId", userId);
-    }
-    return topicProgressList;
+  public List<ChapterProgress> findChapterProgressesByTopicIdAndUserId(String topicId,
+      String userId) {
+    return this.chapterProgressRepository.findChapterProgressesByTopicIdAndUserId(topicId, userId);
   }
 
   @Override
-  public TopicProgress updateOrCreateTopicProgress(String topicId, String userId) throws Exception {
+  public List<TopicProgress> findTopicProgressesByUserId(String userId) {
+    return this.topicProgressRepository.findTopicProgressesByUserId(userId);
+  }
+
+  @Override
+  public TopicProgress updateOrCreateTopicProgress(String topicId, String userId) {
     TopicProgress topicProgress =
-        this.topicProgressRepository.findTopicProgressesByTopicIdAndUserId(topicId, userId)
+        this.topicProgressRepository.findTopicProgressByTopicIdAndUserId(topicId, userId)
             .orElse(null);
 
     if (Objects.isNull(topicProgress)) {
@@ -63,17 +59,7 @@ public class ProgressServiceImpl implements ProgressService {
   }
 
   @Override
-  public void deleteTopicProgress(String id) {
-
-  }
-
-  @Override
-  public void deleteChapterProgress(String id) {
-    this.chapterProgressRepository.deleteById(id);
-  }
-
-  @Override
-  public ChapterProgress updateOrCreateChapterProgress(ProgressVo progressVo) throws Exception {
+  public ChapterProgress updateOrCreateChapterProgress(ProgressVo progressVo) {
     // update from FE
     ChapterProgress chapterProgress =
         this.chapterProgressRepository.findChapterProgressByChapterIdAndUserId(progressVo.getChapterId(),
@@ -107,19 +93,6 @@ public class ProgressServiceImpl implements ProgressService {
     return result;
   }
 
-  @Override
-  public List<ChapterProgress> findChapterProgressByTopicIdAndUserId(String topicId,
-      String userId) throws ResourceNotFoundException {
-    List<ChapterProgress> chapterProgressList =
-        this.chapterProgressRepository.findChapterProgressesByTopicIdAndUserId(topicId, userId);
-
-    if (CollectionUtils.isEmpty(chapterProgressList)) {
-      throw new ResourceNotFoundException(
-          "Chapter Progress with [topicId, userId] not found for: " + topicId + ", " + userId);
-    }
-    return chapterProgressList;
-  }
-
   private double calculateTopicCompletion(List<Chapter> chapterList,
       List<ChapterProgress> chapterProgressList) {
     int total = chapterList.size();
@@ -133,7 +106,7 @@ public class ProgressServiceImpl implements ProgressService {
       }
     }
 
-    return (double) completed / (double) total;
+    return completed / (double) total;
   }
 
 }

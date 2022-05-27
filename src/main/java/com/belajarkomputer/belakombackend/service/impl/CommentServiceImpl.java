@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -76,6 +77,7 @@ public class CommentServiceImpl implements CommentService {
         .chapterId(request.getChapterId())
         .content(request.getContent())
         .parentCommentId(request.getParentCommentId())
+        .lastUpdated(new Date())
         .build();
 
     this.commentRepository.save(comment);
@@ -94,6 +96,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     comment.setContent(request.getContent());
+    comment.setLastUpdated(new Date());
     this.commentRepository.save(comment);
   }
 
@@ -108,5 +111,10 @@ public class CommentServiceImpl implements CommentService {
       throw new BadRequestException("userId does not match");
     }
     this.commentRepository.deleteById(commentId);
+  }
+
+  @Override
+  public void deleteCommentByChapterId(String chapterId) {
+    this.commentRepository.deleteCommentsByChapterId(chapterId);
   }
 }

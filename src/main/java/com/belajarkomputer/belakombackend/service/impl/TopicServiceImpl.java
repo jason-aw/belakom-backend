@@ -6,15 +6,14 @@ import com.belajarkomputer.belakombackend.model.entity.TopicProgress;
 import com.belajarkomputer.belakombackend.model.request.CreateTopicRequest;
 import com.belajarkomputer.belakombackend.model.request.UpdateTopicRequest;
 import com.belajarkomputer.belakombackend.model.vo.TopicVo;
-import com.belajarkomputer.belakombackend.repository.TopicProgressRepository;
 import com.belajarkomputer.belakombackend.repository.TopicRepository;
+import com.belajarkomputer.belakombackend.service.ChapterService;
+import com.belajarkomputer.belakombackend.service.ProgressService;
 import com.belajarkomputer.belakombackend.service.TopicService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,19 +25,21 @@ import java.util.Objects;
 public class TopicServiceImpl implements TopicService {
 
   private TopicRepository topicRepository;
-  private TopicProgressRepository topicProgressRepository;
+  private ProgressService progressService;
+  private ChapterService chapterService;
 
   @Override
   public List<TopicVo> getAllTopic(String userId) {
 
-    List<Topic> topics =  this.topicRepository.findAll();
+    List<Topic> topics = this.topicRepository.findAll();
     List<TopicProgress> topicProgressList =
-        this.topicProgressRepository.findTopicProgressesByUserId(userId);
+        this.progressService.findTopicProgressesByUserId(userId);
 
     return createTopicsResponse(topics, topicProgressList);
   }
 
-  private List<TopicVo> createTopicsResponse(List<Topic> topics, List<TopicProgress> topicProgressList) {
+  private List<TopicVo> createTopicsResponse(List<Topic> topics,
+      List<TopicProgress> topicProgressList) {
 
     List<TopicVo> topicVos = new ArrayList<>();
     topics.forEach(topic -> {
@@ -82,7 +83,7 @@ public class TopicServiceImpl implements TopicService {
     if (!this.topicRepository.existsById(id)) {
       throw new BadRequestException("Topic dengan id " + " tidak ada!");
     }
-
+    this.chapterService.deleteChaptersByTopicId(id);
     this.topicRepository.deleteById(id);
   }
 

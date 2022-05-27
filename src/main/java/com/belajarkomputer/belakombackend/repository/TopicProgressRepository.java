@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface TopicProgressRepository extends MongoRepository<TopicProgress, String> {
   List<TopicProgress> findTopicProgressesByUserId(String userId);
-  Optional<TopicProgress> findTopicProgressesByTopicIdAndUserId(String topicId, String userId);
+  Optional<TopicProgress> findTopicProgressByTopicIdAndUserId(String topicId, String userId);
 }

@@ -10,4 +10,5 @@ public interface CommentService {
   void createComment(String userId, CommentRequest request);
   void editComment(UserPrincipal userPrincipal, EditCommentRequest request) throws Exception;
   void deleteComment(UserPrincipal userPrincipal, String commentId);
+  void deleteCommentByChapterId(String chapterId);
 }

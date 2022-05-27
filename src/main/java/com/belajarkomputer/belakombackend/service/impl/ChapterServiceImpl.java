@@ -1,6 +1,5 @@
 package com.belajarkomputer.belakombackend.service.impl;
 
-import com.belajarkomputer.belakombackend.exceptions.BadRequestException;
 import com.belajarkomputer.belakombackend.exceptions.ResourceNotFoundException;
 import com.belajarkomputer.belakombackend.model.entity.Chapter;
 import com.belajarkomputer.belakombackend.model.entity.ChapterProgress;
@@ -8,9 +7,10 @@ import com.belajarkomputer.belakombackend.model.entity.Topic;
 import com.belajarkomputer.belakombackend.model.request.CreateChapterRequest;
 import com.belajarkomputer.belakombackend.model.request.UpdateChapterRequest;
 import com.belajarkomputer.belakombackend.model.vo.ChapterVo;
-import com.belajarkomputer.belakombackend.repository.ChapterProgressRepository;
 import com.belajarkomputer.belakombackend.repository.ChapterRepository;
 import com.belajarkomputer.belakombackend.service.ChapterService;
+import com.belajarkomputer.belakombackend.service.CommentService;
+import com.belajarkomputer.belakombackend.service.ProgressService;
 import com.belajarkomputer.belakombackend.service.TopicService;
 import com.belajarkomputer.belakombackend.service.FileStorageService;
 import lombok.AllArgsConstructor;
@@ -32,7 +32,8 @@ public class ChapterServiceImpl implements ChapterService {
   private ChapterRepository chapterRepository;
   private FileStorageService fileStorageService;
   private TopicService topicService;
-  private ChapterProgressRepository chapterProgressRepository;
+  private ProgressService progressService;
+  private CommentService commentService;
 
   @Override
   public List<Chapter> getAllChaptersByTopicId(String topicId) {
@@ -64,7 +65,7 @@ public class ChapterServiceImpl implements ChapterService {
     List<Chapter> chapters = this.chapterRepository.findChaptersByTopicId(topicId);
 
     List<ChapterProgress> chapterProgressList =
-        this.chapterProgressRepository.findChapterProgressesByTopicIdAndUserId(topicId, userId);
+        this.progressService.findChapterProgressesByTopicIdAndUserId(topicId, userId);
 
     if (CollectionUtils.isEmpty(chapters)) {
       return null;
@@ -146,9 +147,18 @@ public class ChapterServiceImpl implements ChapterService {
     }
     Chapter chapter = this.findChapterById(id);
     chapter.getImageAttachments().forEach(filename -> this.fileStorageService.delete(filename));
-    topicService.removeChapterFromOrder(chapter.getTopicId(), id);
+    this.topicService.removeChapterFromOrder(chapter.getTopicId(), id);
+    this.commentService.deleteCommentByChapterId(id);
 
     this.chapterRepository.deleteById(id);
+  }
+
+  @Override
+  public void deleteChaptersByTopicId(String topicId) {
+    List<Chapter> chapters = this.chapterRepository.findChaptersByTopicId(topicId);
+    for (Chapter c : chapters) {
+      this.deleteChapter(c.getId());
+    }
   }
 
   @Override

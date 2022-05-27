@@ -7,11 +7,8 @@ import com.belajarkomputer.belakombackend.model.vo.ProgressVo;
 import java.util.List;
 
 public interface ProgressService {
-  List<TopicProgress> findTopicProgressByUserId(String userId) throws Exception;
-  TopicProgress updateOrCreateTopicProgress(String topicId, String userId) throws Exception;
-  void deleteTopicProgress(String id);
-
-  void deleteChapterProgress(String id);
-  ChapterProgress updateOrCreateChapterProgress(ProgressVo progressVo) throws Exception;
-  List<ChapterProgress> findChapterProgressByTopicIdAndUserId(String topicId, String userId) throws Exception;
+  List<ChapterProgress> findChapterProgressesByTopicIdAndUserId(String topicId, String userId);
+  List<TopicProgress> findTopicProgressesByUserId(String userId);
+  TopicProgress updateOrCreateTopicProgress(String topicId, String userId);
+  ChapterProgress updateOrCreateChapterProgress(ProgressVo progressVo);
 }
