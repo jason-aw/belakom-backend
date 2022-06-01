@@ -9,7 +9,8 @@ import java.util.List;
 
 public interface TopicService {
   Topic createTopic(CreateTopicRequest request);
-  List<TopicVo> getAllTopic(String userId);
+  List<Topic> getAllTopic();
+  List<TopicVo> getAllTopicByUserId(String userId);
   void deleteTopic(String id);
   Topic updateTopic(UpdateTopicRequest request);
   void addChapterList(String topicId, String chapterId);

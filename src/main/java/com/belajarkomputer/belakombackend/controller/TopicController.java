@@ -12,6 +12,7 @@ import com.belajarkomputer.belakombackend.service.TopicService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping(value = "/api/topic")
@@ -34,21 +34,25 @@ public class TopicController {
   private final TopicService topicService;
 
   @GetMapping("/all")
+  public ResponseEntity<?> getAllTopic() {
+    List<Topic> result = topicService.getAllTopic();
+    return ResponseEntity.ok(ApiResponse.builder().success(true)
+        .value(result).build());
+  }
+
+  @GetMapping("/allByUserId")
+  @Secured({"ROLE_ADMIN", "ROLE_USER"})
   public ResponseEntity<?> getAllTopic(@AuthenticationPrincipal UserPrincipal userPrincipal) {
     log.info("user principal: {}", userPrincipal);
-    String userId = "";
-    if (!Objects.isNull(userPrincipal)) {
-      userId = userPrincipal.getId();
-    }
-    List<TopicVo> result = topicService.getAllTopic(userId);
+    List<TopicVo> result = topicService.getAllTopicByUserId(userPrincipal.getId());
     return ResponseEntity.ok(ApiResponse.builder().success(false)
         .value(result).build());
   }
 
-  @GetMapping("/{topicName}")
-  public ResponseEntity<?> getTopicById(@PathVariable String topicName) {
+  @GetMapping("/{id}")
+  public ResponseEntity<?> getTopicById(@PathVariable String id) {
     try {
-      Topic result = topicService.getTopicByTopicName(topicName);
+      Topic result = topicService.findTopicById(id);
       return ResponseEntity.ok(ApiResponse.builder().success(true)
           .value(result).build());
     } catch (Exception ex) {
@@ -57,7 +61,20 @@ public class TopicController {
     }
   }
 
+//  @GetMapping("/{topicName}")
+//  public ResponseEntity<?> getTopicByTopicName(@PathVariable String topicName) {
+//    try {
+//      Topic result = topicService.getTopicByTopicName(topicName);
+//      return ResponseEntity.ok(ApiResponse.builder().success(true)
+//          .value(result).build());
+//    } catch (Exception ex) {
+//      return ResponseEntity.badRequest().body(ApiResponse.builder().success(false)
+//          .message(ex.getMessage()).build());
+//    }
+//  }
+
   @PostMapping("/create")
+  @Secured("ROLE_ADMIN")
   public ResponseEntity<?> createTopic(@RequestBody CreateTopicRequest request) {
     try {
       Topic result = topicService.createTopic(request);
@@ -73,6 +90,7 @@ public class TopicController {
   }
 
   @PostMapping("/updateChapterOrder")
+  @Secured("ROLE_ADMIN")
   public ResponseEntity<?> updateTopicsChapterOrder(@RequestBody
       UpdateTopicChapterOrderRequest request) {
     try {
@@ -90,6 +108,7 @@ public class TopicController {
   }
 
   @DeleteMapping("/delete/{id}")
+  @Secured("ROLE_ADMIN")
   public ResponseEntity<?> deleteTopic(@PathVariable String id) {
     try {
       topicService.deleteTopic(id);
@@ -102,6 +121,7 @@ public class TopicController {
   }
 
   @PutMapping("/update")
+  @Secured("ROLE_ADMIN")
   public ResponseEntity<?> updateTopic(@RequestBody UpdateTopicRequest request) {
     try {
       Topic result = topicService.updateTopic(request);

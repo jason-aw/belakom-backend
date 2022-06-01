@@ -84,6 +84,7 @@ public class ProgressServiceImpl implements ProgressService {
 
   private double calculateTopicCompletion(List<Chapter> chapterList,
       List<ChapterProgress> chapterProgressList) {
+    log.info("calc topic completion chapterList: {}, chapterProgressList: {}", chapterList, chapterProgressList);
     int total = chapterList.size();
     total += (int) chapterList.stream().filter(Chapter::isEnableQuiz).count();
     double completed = 0;
@@ -94,6 +95,7 @@ public class ProgressServiceImpl implements ProgressService {
         completed += chapterProgress.getCorrect() == chapterProgress.getTotalQuestions() ? 0.5 : 0;
       }
     }
+    log.info("completed {}, total {}", completed, total);
 
     return completed / (double) total;
   }

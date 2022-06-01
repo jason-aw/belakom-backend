@@ -36,13 +36,17 @@ public class ChapterController {
   private ChapterService chapterService;
 
   @GetMapping("/getAllByTopicId")
-  public ResponseEntity<?> getAllChapterByTopicId(@RequestParam String topicId,
+  public ResponseEntity<?> getAllChapterByTopicId(@RequestParam String topicId) {
+    List<Chapter> result = chapterService.getAllChaptersByTopicId(topicId);
+    return ResponseEntity.ok(ApiResponse.builder().success(true).value(result).build());
+  }
+
+  @GetMapping("/getAllByTopicIdAndUserId")
+  @Secured({"ROLE_ADMIN", "ROLE_USER"})
+  public ResponseEntity<?> getAllChapterByTopicIdAndUserId(@RequestParam String topicId,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
-    String userId = "";
-    if (!Objects.isNull(userPrincipal)) {
-      userId = userPrincipal.getId();
-    }
-    List<ChapterVo> result = chapterService.getAllChaptersByTopicIdAndUserId(topicId, userId);
+    List<ChapterVo> result = chapterService.getAllChaptersByTopicIdAndUserId(topicId,
+        userPrincipal.getId());
     return ResponseEntity.ok(ApiResponse.builder().success(true).value(result).build());
   }
 
@@ -60,6 +64,7 @@ public class ChapterController {
   }
 
   @PostMapping("/create")
+  @Secured("ROLE_ADMIN")
   public ResponseEntity<?> createChapter(@RequestBody CreateChapterRequest request) {
     try {
       this.chapterService.createChapter(request);
@@ -71,6 +76,7 @@ public class ChapterController {
   }
 
   @DeleteMapping("/delete/{id}")
+  @Secured("ROLE_ADMIN")
   public ResponseEntity<?> deleteChapter(@PathVariable String id) {
     try {
       this.chapterService.deleteChapter(id);

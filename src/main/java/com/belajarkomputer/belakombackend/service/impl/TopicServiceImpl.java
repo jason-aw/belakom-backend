@@ -29,7 +29,12 @@ public class TopicServiceImpl implements TopicService {
   private ChapterHelperService chapterHelperService;
 
   @Override
-  public List<TopicVo> getAllTopic(String userId) {
+  public List<Topic> getAllTopic() {
+    return this.topicRepository.findAll();
+  }
+
+  @Override
+  public List<TopicVo> getAllTopicByUserId(String userId) {
 
     List<Topic> topics = this.topicRepository.findAll();
     List<TopicProgress> topicProgressList =

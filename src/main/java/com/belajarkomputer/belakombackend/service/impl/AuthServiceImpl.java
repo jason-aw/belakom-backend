@@ -102,16 +102,9 @@ public class AuthServiceImpl implements AuthService {
     String refreshToken = this.tokenProvider.getJwtFromRequest(request);
     if (StringUtils.hasText(refreshToken) && this.tokenProvider.validateToken(refreshToken)) {
       Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-      UserPrincipal principal = (UserPrincipal) auth.getPrincipal();
-      List<String> roles = principal.getAuthorities()
-          .stream()
-          .map(GrantedAuthority::getAuthority)
-          .collect(Collectors.toList());
       return UserVo.builder()
-          .email(principal.getEmail())
           .accessToken(this.tokenProvider.createAccessToken(auth))
           .refreshToken(refreshToken)
-          .roles(roles)
           .build();
     } else {
       throw new BadCredentialsException("Unauthorized");
