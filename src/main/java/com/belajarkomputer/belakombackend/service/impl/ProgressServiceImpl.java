@@ -25,17 +25,6 @@ public class ProgressServiceImpl implements ProgressService {
   private ChapterService chapterService;
 
   @Override
-  public List<ChapterProgress> findChapterProgressesByTopicIdAndUserId(String topicId,
-      String userId) {
-    return this.chapterProgressRepository.findChapterProgressesByTopicIdAndUserId(topicId, userId);
-  }
-
-  @Override
-  public List<TopicProgress> findTopicProgressesByUserId(String userId) {
-    return this.topicProgressRepository.findTopicProgressesByUserId(userId);
-  }
-
-  @Override
   public TopicProgress updateOrCreateTopicProgress(String topicId, String userId) {
     TopicProgress topicProgress =
         this.topicProgressRepository.findTopicProgressByTopicIdAndUserId(topicId, userId)

@@ -6,9 +6,9 @@ import com.belajarkomputer.belakombackend.model.entity.TopicProgress;
 import com.belajarkomputer.belakombackend.model.request.CreateTopicRequest;
 import com.belajarkomputer.belakombackend.model.request.UpdateTopicRequest;
 import com.belajarkomputer.belakombackend.model.vo.TopicVo;
+import com.belajarkomputer.belakombackend.repository.TopicProgressRepository;
 import com.belajarkomputer.belakombackend.repository.TopicRepository;
 import com.belajarkomputer.belakombackend.service.ChapterService;
-import com.belajarkomputer.belakombackend.service.ProgressService;
 import com.belajarkomputer.belakombackend.service.TopicService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,15 +25,15 @@ import java.util.Objects;
 public class TopicServiceImpl implements TopicService {
 
   private TopicRepository topicRepository;
-  private ProgressService progressService;
-  private ChapterService chapterService;
+  private TopicProgressRepository topicProgressRepository;
+  private ChapterHelperService chapterHelperService;
 
   @Override
   public List<TopicVo> getAllTopic(String userId) {
 
     List<Topic> topics = this.topicRepository.findAll();
     List<TopicProgress> topicProgressList =
-        this.progressService.findTopicProgressesByUserId(userId);
+          this.topicProgressRepository.findTopicProgressesByUserId(userId);
 
     return createTopicsResponse(topics, topicProgressList);
   }
@@ -83,7 +83,7 @@ public class TopicServiceImpl implements TopicService {
     if (!this.topicRepository.existsById(id)) {
       throw new BadRequestException("Topic dengan id " + " tidak ada!");
     }
-    this.chapterService.deleteChaptersByTopicId(id);
+    this.chapterHelperService.deleteChaptersByTopicId(id);
     this.topicRepository.deleteById(id);
   }
 
@@ -103,13 +103,6 @@ public class TopicServiceImpl implements TopicService {
   public void addChapterList(String topicId, String chapterId) {
     Topic topic = this.findTopicById(topicId);
     topic.getChapterOrder().add(chapterId);
-    topicRepository.save(topic);
-  }
-
-  @Override
-  public void removeChapterFromOrder(String topicId, String chapterId) {
-    Topic topic = this.findTopicById(topicId);
-    topic.getChapterOrder().remove(chapterId);
     topicRepository.save(topic);
   }
 

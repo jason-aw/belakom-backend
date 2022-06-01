@@ -7,6 +7,7 @@ import com.belajarkomputer.belakombackend.model.entity.Topic;
 import com.belajarkomputer.belakombackend.model.request.CreateChapterRequest;
 import com.belajarkomputer.belakombackend.model.request.UpdateChapterRequest;
 import com.belajarkomputer.belakombackend.model.vo.ChapterVo;
+import com.belajarkomputer.belakombackend.repository.ChapterProgressRepository;
 import com.belajarkomputer.belakombackend.repository.ChapterRepository;
 import com.belajarkomputer.belakombackend.service.ChapterService;
 import com.belajarkomputer.belakombackend.service.CommentService;
@@ -30,10 +31,9 @@ import java.util.Optional;
 public class ChapterServiceImpl implements ChapterService {
 
   private ChapterRepository chapterRepository;
-  private FileStorageService fileStorageService;
   private TopicService topicService;
-  private ProgressService progressService;
-  private CommentService commentService;
+  private ChapterProgressRepository chapterProgressRepository;
+  private ChapterHelperService chapterHelperService;
 
   @Override
   public List<Chapter> getAllChaptersByTopicId(String topicId) {
@@ -65,7 +65,7 @@ public class ChapterServiceImpl implements ChapterService {
     List<Chapter> chapters = this.chapterRepository.findChaptersByTopicId(topicId);
 
     List<ChapterProgress> chapterProgressList =
-        this.progressService.findChapterProgressesByTopicIdAndUserId(topicId, userId);
+        this.chapterProgressRepository.findChapterProgressesByTopicIdAndUserId(topicId, userId);
 
     if (CollectionUtils.isEmpty(chapters)) {
       return null;
@@ -142,15 +142,7 @@ public class ChapterServiceImpl implements ChapterService {
 
   @Override
   public void deleteChapter(String id) {
-    if (!this.chapterRepository.findById(id).isPresent()) {
-      throw new ResourceNotFoundException("Chapter", "id", id);
-    }
-    Chapter chapter = this.findChapterById(id);
-    chapter.getImageAttachments().forEach(filename -> this.fileStorageService.delete(filename));
-    this.topicService.removeChapterFromOrder(chapter.getTopicId(), id);
-    this.commentService.deleteCommentByChapterId(id);
-
-    this.chapterRepository.deleteById(id);
+    chapterHelperService.deleteChapter(id);
   }
 
   @Override
