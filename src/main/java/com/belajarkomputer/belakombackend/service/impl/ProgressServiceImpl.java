@@ -95,7 +95,7 @@ public class ProgressServiceImpl implements ProgressService {
         completed += chapterProgress.getCorrect() == chapterProgress.getTotalQuestions() ? 0.5 : 0;
       }
     }
-    log.info("completed {}, total {}", completed, total);
+    log.info("completed {}, total {}, result {}", completed, total, (completed / (double) total));
 
     return completed / (double) total;
   }

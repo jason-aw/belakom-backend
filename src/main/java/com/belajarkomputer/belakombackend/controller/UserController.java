@@ -3,7 +3,6 @@ package com.belajarkomputer.belakombackend.controller;
 import com.belajarkomputer.belakombackend.exceptions.ResourceNotFoundException;
 import com.belajarkomputer.belakombackend.model.request.UpdateUserRequest;
 import com.belajarkomputer.belakombackend.model.response.ApiResponse;
-import com.belajarkomputer.belakombackend.model.response.AuthResponse;
 import com.belajarkomputer.belakombackend.model.vo.UserVo;
 import com.belajarkomputer.belakombackend.security.CustomUserDetailsService;
 import com.belajarkomputer.belakombackend.security.UserPrincipal;

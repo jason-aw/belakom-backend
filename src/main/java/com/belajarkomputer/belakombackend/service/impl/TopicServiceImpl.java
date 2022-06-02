@@ -8,7 +8,6 @@ import com.belajarkomputer.belakombackend.model.request.UpdateTopicRequest;
 import com.belajarkomputer.belakombackend.model.vo.TopicVo;
 import com.belajarkomputer.belakombackend.repository.TopicProgressRepository;
 import com.belajarkomputer.belakombackend.repository.TopicRepository;
-import com.belajarkomputer.belakombackend.service.ChapterService;
 import com.belajarkomputer.belakombackend.service.TopicService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
