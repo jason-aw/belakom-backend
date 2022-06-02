@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +26,6 @@ public class ProgressController {
   private ProgressService progressService;
 
   @PostMapping("/chapter")
-  @Secured("ROLE_USER")
   public ResponseEntity<?> updateChapterProgress(@RequestBody ProgressRequest request,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
     ProgressVo progressVo = ProgressVo.builder()
