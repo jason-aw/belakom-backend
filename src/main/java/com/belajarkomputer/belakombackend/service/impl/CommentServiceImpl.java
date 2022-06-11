@@ -111,6 +111,10 @@ public class CommentServiceImpl implements CommentService {
       throw new BadRequestException("userId does not match");
     }
     this.commentRepository.deleteById(commentId);
+    if (Objects.isNull(comment.getParentCommentId())) {
+      // delete comment by parent commentId
+      this.commentRepository.deleteCommentByParentCommentId(commentId);
+    }
   }
 
   @Override

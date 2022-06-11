@@ -15,4 +15,5 @@ public interface CommentRepository extends MongoRepository<Comment, String> {
   List<Comment> findCommentsByParentCommentId(String parentCommentId);
 
   void deleteCommentsByChapterId(String chapterId);
+  void deleteCommentByParentCommentId(String parentCommentId);
 }
