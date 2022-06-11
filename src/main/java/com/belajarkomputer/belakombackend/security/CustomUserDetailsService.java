@@ -2,10 +2,16 @@ package com.belajarkomputer.belakombackend.security;
 
 import com.belajarkomputer.belakombackend.exceptions.BadRequestException;
 import com.belajarkomputer.belakombackend.exceptions.ResourceNotFoundException;
+import com.belajarkomputer.belakombackend.model.entity.Chapter;
+import com.belajarkomputer.belakombackend.model.entity.Topic;
 import com.belajarkomputer.belakombackend.model.entity.User;
 import com.belajarkomputer.belakombackend.model.request.UpdateUserRequest;
+import com.belajarkomputer.belakombackend.model.vo.UserChapterHistory;
 import com.belajarkomputer.belakombackend.model.vo.UserVo;
+import com.belajarkomputer.belakombackend.repository.ChapterRepository;
+import com.belajarkomputer.belakombackend.repository.TopicRepository;
 import com.belajarkomputer.belakombackend.repository.UserRepository;
+import com.belajarkomputer.belakombackend.service.ChapterService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,6 +31,8 @@ import java.util.Objects;
 public class CustomUserDetailsService implements UserDetailsService {
 
   private UserRepository userRepository;
+  private final ChapterRepository chapterRepository;
+  private final TopicRepository topicRepository;
   private static final int LAST_SEEN_CHAPTERS_LIMIT = 10;
 
   @Override
@@ -60,6 +69,24 @@ public class CustomUserDetailsService implements UserDetailsService {
         .lastSeenChapters(user.getLastSeenChapters())
         .currentlyLearningTopic(user.getCurrentlyLearningTopic())
         .build();
+  }
+
+  public List<UserChapterHistory> getUserChapterData(UserVo userVo) {
+    List<UserChapterHistory> chapterHistories = new ArrayList<>();
+    for (String chapterId : userVo.getLastSeenChapters()) {
+      Chapter chapter = this.chapterRepository.findById(chapterId).orElse(null);
+      if (Objects.nonNull(chapter)) {
+        UserChapterHistory userChapterHistory = new UserChapterHistory();
+        userChapterHistory.setChapterId(chapterId);
+        userChapterHistory.setChapterName(chapter.getChapterName());
+        userChapterHistory.setTopicId(chapter.getTopicId());
+        Topic topic = this.topicRepository.findById(chapter.getTopicId()).orElse(null);
+        userChapterHistory.setTopicName(topic.getTopicName());
+        chapterHistories.add(userChapterHistory);
+      }
+    }
+
+    return chapterHistories;
   }
 
   public UserVo findUserDataById(String id) {

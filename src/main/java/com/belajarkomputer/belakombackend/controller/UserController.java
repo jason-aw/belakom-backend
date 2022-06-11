@@ -1,8 +1,10 @@
 package com.belajarkomputer.belakombackend.controller;
 
 import com.belajarkomputer.belakombackend.exceptions.ResourceNotFoundException;
+import com.belajarkomputer.belakombackend.model.entity.Chapter;
 import com.belajarkomputer.belakombackend.model.request.UpdateUserRequest;
 import com.belajarkomputer.belakombackend.model.response.ApiResponse;
+import com.belajarkomputer.belakombackend.model.vo.UserChapterHistory;
 import com.belajarkomputer.belakombackend.model.vo.UserVo;
 import com.belajarkomputer.belakombackend.security.CustomUserDetailsService;
 import com.belajarkomputer.belakombackend.security.UserPrincipal;
@@ -45,6 +47,23 @@ public class UserController {
           .collect(Collectors.toList());
       userVo.setRoles(roles);
       return ResponseEntity.ok(ApiResponse.builder().success(true).value(userVo).build());
+    } catch (ResourceNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+          .body(ApiResponse.builder().success(false).message(e.getMessage()).build());
+    }
+  }
+
+  @GetMapping("/currentUserChapterHistory")
+  public ResponseEntity<?> getCurrentUserChapter(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+    if (Objects.isNull(userPrincipal)) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+          .body(ApiResponse.builder().success(false)
+              .message("Cannot get current user, unauthorized").build());
+    }
+    try {
+      UserVo userVo = this.userDetailsService.findUserById(userPrincipal.getId());
+      List<UserChapterHistory> chapterUsers = this.userDetailsService.getUserChapterData(userVo);
+      return ResponseEntity.ok(ApiResponse.builder().success(true).value(chapterUsers).build());
     } catch (ResourceNotFoundException e) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
           .body(ApiResponse.builder().success(false).message(e.getMessage()).build());
