@@ -12,7 +12,6 @@ public interface ChapterService {
   List<ChapterVo> getAllChaptersByTopicIdAndUserId(String topicId, String userId);
   Chapter createChapter(CreateChapterRequest request);
   void deleteChapter(String id);
-  void deleteChaptersByTopicId(String topicId);
   Chapter updateChapter(UpdateChapterRequest request);
   Chapter findChapterById(String id);
 }

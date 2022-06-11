@@ -10,10 +10,7 @@ import com.belajarkomputer.belakombackend.model.vo.ChapterVo;
 import com.belajarkomputer.belakombackend.repository.ChapterProgressRepository;
 import com.belajarkomputer.belakombackend.repository.ChapterRepository;
 import com.belajarkomputer.belakombackend.service.ChapterService;
-import com.belajarkomputer.belakombackend.service.CommentService;
-import com.belajarkomputer.belakombackend.service.ProgressService;
 import com.belajarkomputer.belakombackend.service.TopicService;
-import com.belajarkomputer.belakombackend.service.FileStorageService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -143,14 +140,6 @@ public class ChapterServiceImpl implements ChapterService {
   @Override
   public void deleteChapter(String id) {
     chapterHelperService.deleteChapter(id);
-  }
-
-  @Override
-  public void deleteChaptersByTopicId(String topicId) {
-    List<Chapter> chapters = this.chapterRepository.findChaptersByTopicId(topicId);
-    for (Chapter c : chapters) {
-      this.deleteChapter(c.getId());
-    }
   }
 
   @Override

@@ -1,7 +1,6 @@
 package com.belajarkomputer.belakombackend.controller;
 
 import com.belajarkomputer.belakombackend.exceptions.BadRequestException;
-import com.belajarkomputer.belakombackend.model.entity.User;
 import com.belajarkomputer.belakombackend.model.request.LoginRequest;
 import com.belajarkomputer.belakombackend.model.request.LogoutRequest;
 import com.belajarkomputer.belakombackend.model.request.RegisterRequest;
@@ -20,11 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.net.URI;
 
 @RestController
 @RequestMapping(value = "/api/auth")
@@ -63,14 +60,9 @@ public class AuthController {
 
   @PostMapping("/register")
   public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest request) {
-    User result;
     try {
-      result = this.authService.registerUser(request);
-      URI location = ServletUriComponentsBuilder
-          .fromCurrentContextPath().path("/api/auth/user/me")
-          .buildAndExpand(result.getId()).toUri();
-
-      return ResponseEntity.created(location).body(ApiResponse.builder()
+      this.authService.registerUser(request);
+      return ResponseEntity.ok(ApiResponse.builder()
           .success(true).message("User registered successfully").build());
     } catch (BadRequestException ex) {
       return ResponseEntity.badRequest().body(ApiResponse.builder()

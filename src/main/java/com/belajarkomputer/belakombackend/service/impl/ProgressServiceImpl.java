@@ -49,7 +49,6 @@ public class ProgressServiceImpl implements ProgressService {
 
   @Override
   public ChapterProgress updateOrCreateChapterProgress(ProgressVo progressVo) {
-    // update from FE
     ChapterProgress chapterProgress =
         this.chapterProgressRepository.findChapterProgressByChapterIdAndUserId(progressVo.getChapterId(),
             progressVo.getUserId()).orElse(null);
@@ -67,10 +66,10 @@ public class ProgressServiceImpl implements ProgressService {
           .build();
     } else {
       if (Objects.nonNull(progressVo.getArticleCompleted())) {
-        //update article complete doang
+        // update article complete
         chapterProgress.setArticleCompleted(progressVo.getArticleCompleted());
       } else if (Objects.nonNull(progressVo.getQuizCompleted())) {
-        //update quiz complete doang
+        // update quiz complete
         chapterProgress.setQuizCompleted(progressVo.getQuizCompleted());
         chapterProgress.setCorrect(progressVo.getCorrect());
       }
@@ -95,7 +94,7 @@ public class ProgressServiceImpl implements ProgressService {
         completed += chapterProgress.getCorrect() == chapterProgress.getTotalQuestions() ? 0.5 : 0;
       }
     }
-    log.info("completed {}, total {}", completed, total);
+    log.info("completed {}, total {}, result {}", completed, total, (completed / (double) total));
 
     return completed / (double) total;
   }

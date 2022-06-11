@@ -61,18 +61,6 @@ public class TopicController {
     }
   }
 
-//  @GetMapping("/{topicName}")
-//  public ResponseEntity<?> getTopicByTopicName(@PathVariable String topicName) {
-//    try {
-//      Topic result = topicService.getTopicByTopicName(topicName);
-//      return ResponseEntity.ok(ApiResponse.builder().success(true)
-//          .value(result).build());
-//    } catch (Exception ex) {
-//      return ResponseEntity.badRequest().body(ApiResponse.builder().success(false)
-//          .message(ex.getMessage()).build());
-//    }
-//  }
-
   @PostMapping("/create")
   @Secured("ROLE_ADMIN")
   public ResponseEntity<?> createTopic(@RequestBody CreateTopicRequest request) {

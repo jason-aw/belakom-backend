@@ -6,10 +6,8 @@ import com.belajarkomputer.belakombackend.model.entity.Chapter;
 import com.belajarkomputer.belakombackend.model.entity.Topic;
 import com.belajarkomputer.belakombackend.repository.ChapterRepository;
 import com.belajarkomputer.belakombackend.repository.TopicRepository;
-import com.belajarkomputer.belakombackend.service.ChapterService;
 import com.belajarkomputer.belakombackend.service.CommentService;
 import com.belajarkomputer.belakombackend.service.FileStorageService;
-import com.belajarkomputer.belakombackend.service.TopicService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
