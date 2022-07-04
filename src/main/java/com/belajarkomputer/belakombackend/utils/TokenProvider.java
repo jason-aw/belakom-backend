@@ -137,6 +137,9 @@ public class TokenProvider {
         .getBody()
         .getExpiration();
     long ttl = expirationDate.getTime() - new Date().getTime();
+    if (ttl <= 0) {
+      return;
+    }
     JwtToken jwtToken = new JwtToken(token, TimeUnit.MILLISECONDS.toSeconds(ttl));
     logger.info("saving token to redis {}", jwtToken);
     this.tokenRepository.save(jwtToken);
