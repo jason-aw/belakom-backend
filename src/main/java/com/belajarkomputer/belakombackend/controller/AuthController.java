@@ -105,7 +105,7 @@ public class AuthController {
       return ResponseEntity.badRequest().body(ApiResponse.builder()
           .success(false).message(e.getMessage()).build());
     }
-    return ResponseEntity.ok(ApiResponse.builder().success(true).message("Please check your email").build());
+    return ResponseEntity.ok(ApiResponse.builder().success(true).message("Silahkan cek E-mail anda").build());
   }
 
   @PostMapping("/resetPassword")

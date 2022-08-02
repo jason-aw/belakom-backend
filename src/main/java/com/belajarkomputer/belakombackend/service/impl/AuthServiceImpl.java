@@ -56,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
   @Override
   public User registerUser(RegisterRequest request) {
     if (this.userRepository.existsByEmail(request.getEmail())) {
-      throw new BadRequestException("Email address already in use.");
+      throw new BadRequestException("Email yang mau dipakai sudah terdaftar");
     }
 
     // Creating user's account
@@ -129,10 +129,10 @@ public class AuthServiceImpl implements AuthService {
     User user = this.userRepository.findByEmail(email);
 
     if (Objects.isNull(user)) {
-      throw new UsernameNotFoundException("User not found with email : " + email);
+      throw new UsernameNotFoundException("User dengan email " + email + " tidak ditemukan");
     }
     if (Provider.GOOGLE.equals(user.getProvider())) {
-      throw new BadRequestException("This account is logged in via google, can't reset password here");
+      throw new BadRequestException("Akun ini masuk melalui google, tidak bisa reset password disini!");
     }
 
     String token = UUID.randomUUID().toString();
